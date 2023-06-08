@@ -14,7 +14,7 @@ public class User implements Serializable
 {
     @Id
     @Column(name = "id_number", updatable = false, nullable = false)
-    private String personnelNo;
+    private String userId;
 
     @Column(name = "email", nullable = false)
     private String email;
@@ -37,9 +37,9 @@ public class User implements Serializable
     @Column(name = "title", nullable = false)
     private String title;
 
-    public String getPersonnelNo() 
+    public String getUserId() 
     {
-        return personnelNo;
+        return userId;
     }
 
     public String getEmail() 
@@ -77,9 +77,9 @@ public class User implements Serializable
         return title;
     }
     
-    public void setPersonnelNo(String personnelNo) 
+    public void setUserId(String personnelNo) 
     {
-        this.personnelNo = personnelNo;
+        this.userId = personnelNo;
     }
 
     public void setEmail(String email) {

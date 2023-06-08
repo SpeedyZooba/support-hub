@@ -36,7 +36,7 @@ public class Ticket implements Serializable
     @Column(name = "creation_date", nullable = false, updatable = false, insertable = false)
     private LocalDate createdAt;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "status", nullable = false)
     private Status status;
 
