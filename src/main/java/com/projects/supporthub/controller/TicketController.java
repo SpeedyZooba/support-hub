@@ -6,7 +6,6 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -63,7 +62,7 @@ public class TicketController
     }
 
     @PostMapping("/new")
-    public String processTicketForm(@Valid @ModelAttribute("ticket") Ticket ticket, BindingResult result, Model model)
+    public String processTicketForm(@Valid @ModelAttribute("ticket") Ticket ticket, BindingResult result)
     {
         tickets.newTicket(ticket);
         if (result.hasErrors())

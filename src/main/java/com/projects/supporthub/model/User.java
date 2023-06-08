@@ -77,9 +77,9 @@ public class User implements Serializable
         return title;
     }
     
-    public void setUserId(String personnelNo) 
+    public void setUserId(String userId) 
     {
-        this.userId = personnelNo;
+        this.userId = userId;
     }
 
     public void setEmail(String email) {
