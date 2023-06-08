@@ -30,8 +30,8 @@ public class Ticket implements Serializable
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "issuer_id", nullable = false, updatable = false)
-    private String issuerId;
+    @Column(name = "creator_id", nullable = false, updatable = false)
+    private String createdBy;
 
     @Column(name = "creation_date", nullable = false, updatable = false, insertable = false)
     private LocalDate createdAt;
@@ -58,9 +58,9 @@ public class Ticket implements Serializable
         return description;
     }
 
-    public String getIssuerId() 
+    public String getCreatedBy() 
     {
-        return issuerId;
+        return createdBy;
     }
 
     public LocalDate getCreatedAt() 
@@ -93,9 +93,9 @@ public class Ticket implements Serializable
         this.description = description;
     }
     
-    public void setIssuerId(String issuerId) 
+    public void setCreatedBy(String createdBy) 
     {
-        this.issuerId = issuerId;
+        this.createdBy = createdBy;
     }
 
     public void setCreatedAt(LocalDate createdAt) 

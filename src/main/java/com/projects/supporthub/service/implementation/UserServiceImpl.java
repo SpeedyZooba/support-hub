@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.projects.supporthub.model.User;
 import com.projects.supporthub.repository.TicketRepository;
 import com.projects.supporthub.repository.UserRepository;
-import com.projects.supporthub.repository.UserTicketLinkRepository;
 import com.projects.supporthub.service.UserService;
 
 @Service
@@ -15,13 +14,11 @@ public class UserServiceImpl implements UserService
 {
     private UserRepository userRepo;
     private TicketRepository ticketRepo;
-    private UserTicketLinkRepository linkRepo;
 
-    public UserServiceImpl(UserRepository userRepo, TicketRepository ticketRepo, UserTicketLinkRepository linkRepo)
+    public UserServiceImpl(UserRepository userRepo, TicketRepository ticketRepo)
     {
         this.userRepo = userRepo;
         this.ticketRepo = ticketRepo;
-        this.linkRepo = linkRepo;
     }
 
     public void newUser(User user)
@@ -32,8 +29,7 @@ public class UserServiceImpl implements UserService
     public void deleteUserById(String id)
     {
         userRepo.deleteById(id);
-        linkRepo.deleteByUserId(id);
-        ticketRepo.deleteByIssuerId(id);
+        ticketRepo.deleteByCreatorId(id);
     }
 
     public User getUserById(String id)
