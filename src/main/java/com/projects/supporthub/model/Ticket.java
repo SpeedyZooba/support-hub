@@ -27,7 +27,7 @@ public class Ticket implements Serializable
     @Column(name = "category", nullable = false)
     private String category;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "issue", nullable = false)
     private String description;
 
     @Column(name = "creator_id", nullable = false, updatable = false)
@@ -37,7 +37,7 @@ public class Ticket implements Serializable
     private LocalDate createdAt;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "status", nullable = false)
+    @Column(name = "ticket_status", nullable = false)
     private Status status;
 
     @Column(name = "response_date")

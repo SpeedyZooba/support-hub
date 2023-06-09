@@ -82,11 +82,13 @@ public class User implements Serializable
         this.userId = userId;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(String email) 
+    {
         this.email = email;
     }
 
-    public void setPasswordHash(String passwordHash) {
+    public void setPasswordHash(String passwordHash) 
+    {
         this.passwordHash = passwordHash;
     }
     

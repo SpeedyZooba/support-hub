@@ -86,7 +86,7 @@ public class TicketController
     public String deleteTicket(@PathVariable("ticketId") UUID ticketId)
     {
         tickets.deleteTicketById(ticketId);
-        return "/tickets";
+        return "/tickets ";
     }
 
     private Page<Ticket> findPaginatedForUserId(int page, String userId)
