@@ -5,7 +5,12 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.projects.supporthub.model.Ticket;
@@ -37,17 +43,21 @@ public class TicketController
         binder.setDisallowedFields("ticketId");
     }
     
-    @GetMapping("/")
-    public ModelAndView displayAllTickets(@PathVariable String userId)
+    @GetMapping
+    public String displayTicketsByUser(@RequestParam(defaultValue = "1") int page, @PathVariable("userId") String userId, BindingResult result, Model model)
     {
-        ModelAndView mav = new ModelAndView("all");
-        List<Ticket> ticketsFound = tickets.getTicketByUserId(userId);
-        mav.addObject("tickets", ticketsFound);
-        return mav;
+        Page<Ticket> ticketsFound = findPaginatedForUserId(page, userId);
+        // add the message to display when no tickets found issued by the specified user to the model
+        if (ticketsFound.isEmpty())
+        {
+            model.addAttribute("empty", "No tickets issued by this user found.");
+        }
+        // create pagination if there is at least one ticket to display
+        return addPagination(page, model, ticketsFound);
     }
 
     @GetMapping("/{ticketId}")
-    public ModelAndView displayTicketById(@PathVariable UUID ticketId)
+    public ModelAndView displayTicketById(@PathVariable("ticketId") UUID ticketId)
     {
         ModelAndView mav = new ModelAndView("ticket");
         Ticket ticketFound = tickets.getTicketById(ticketId);
@@ -69,13 +79,31 @@ public class TicketController
         {
             return "redirect:/error";
         }
-        return "/tickets/";
+        return "redirect:/tickets";
     }
 
     @DeleteMapping("/delete/{ticketId}")
-    public String deleteTicket(@PathVariable UUID ticketId)
+    public String deleteTicket(@PathVariable("ticketId") UUID ticketId)
     {
         tickets.deleteTicketById(ticketId);
-        return "/tickets/";
+        return "/tickets";
+    }
+
+    private Page<Ticket> findPaginatedForUserId(int page, String userId)
+    {
+        int pageSize = 10;
+        Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("createdAt").ascending());
+        return tickets.getTicketByUserId(userId, pages);
+    }
+
+    private String addPagination(int page, Model model, Page<Ticket> pagination) 
+    {
+        model.addAttribute("ticketList", pagination);
+        List<Ticket> tickets = pagination.getContent();
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages",pagination.getTotalPages());
+        model.addAttribute("totalItems", pagination.getNumberOfElements());
+        model.addAttribute("ticketList", tickets);
+        return "tickets/all";
     }
 }

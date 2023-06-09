@@ -3,6 +3,8 @@ package com.projects.supporthub.service.implementation;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.projects.supporthub.model.Ticket;
@@ -34,9 +36,9 @@ public class TicketServiceImpl implements TicketService
         return ticketRepo.findById(id).get();
     }
 
-    public List<Ticket> getTicketByUserId(String id)
+    public Page<Ticket> getTicketByUserId(String id, Pageable pageable)
     {
-        return ticketRepo.findByCreatorId(id);
+        return ticketRepo.findByCreatorId(id, pageable);
     }
 
     public List<Ticket> getAllTickets()
