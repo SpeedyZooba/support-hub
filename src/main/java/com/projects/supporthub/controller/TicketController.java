@@ -16,7 +16,6 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +30,8 @@ import com.projects.supporthub.service.TicketService;
 public class TicketController 
 {
     private final TicketService tickets;
+
+    private static final String ERROR_REDIRECTION = "redirect:/error";
 
     public TicketController(TicketService tickets)
     {
@@ -66,19 +67,21 @@ public class TicketController
     }
 
     @GetMapping("/new")
-    public ModelAndView initTicketForm()
+    public String initTicketForm(Model model)
     {
-        return new ModelAndView("new", "ticket", new Ticket());
+        Ticket ticket = new Ticket();
+        model.addAttribute("newUser", ticket);
+        return "/ticketform";
     }
 
     @PostMapping("/new")
-    public String processTicketForm(@Valid @ModelAttribute("ticket") Ticket ticket, BindingResult result)
+    public String processTicketForm(@Valid Ticket ticket, BindingResult result)
     {
-        tickets.newTicket(ticket);
         if (result.hasErrors())
         {
-            return "redirect:/error";
+            return ERROR_REDIRECTION;
         }
+        tickets.newTicket(ticket);
         return "redirect:/tickets";
     }
 
