@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.projects.supporthub.model.Ticket;
 import com.projects.supporthub.model.User;
+import com.projects.supporthub.model.Ticket.Status;
 import com.projects.supporthub.service.TicketService;
 import com.projects.supporthub.service.UserService;
 
@@ -73,6 +74,37 @@ public class AdminController
         }
         mav.addObject("ticket", ticketFound);
         return mav;
+    }
+
+    @GetMapping("/tickets/{ticketId}/update")
+    public String initUpdateForm(@PathVariable("ticketId") UUID ticketId, Model model)
+    {
+        Ticket ticket = tickets.getTicketById(ticketId);
+        model.addAttribute("response", ticket);
+        return "/response";
+    }
+
+    @PostMapping("/tickets/{tickedId}/update")
+    public String processUpdateForm(@Valid Ticket ticket, BindingResult result)
+    {
+        if (result.hasErrors())
+        {
+            return ERROR_REDIRECTION;
+        }
+        ticket.setStatus(Status.ANSWERED);
+        tickets.newTicket(ticket);
+        return "/tickets";
+    }
+
+    @DeleteMapping("/tickets/{ticketId}/delete")
+    public String deleteTicket(@PathVariable("ticketId") UUID ticketId)
+    {
+        if (tickets.getTicketById(ticketId) == null)
+        {
+            return ERROR_REDIRECTION;
+        }
+        tickets.deleteTicketById(ticketId);
+        return "/tickets";
     }
 
     @GetMapping("/users")

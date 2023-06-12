@@ -21,6 +21,7 @@ public class UserController
     private final UserService users;
 
     private static final String ERROR_REDIRECTION = "redirect:/error";
+    private static final String[] BLACKLIST = {"ticketId", "userId", "email", "passwordHash"};
 
     public UserController(UserService users)
     {
@@ -30,7 +31,7 @@ public class UserController
     @InitBinder
     public void setAllowedFields(WebDataBinder dataBinder)
     {
-        dataBinder.setDisallowedFields("userId", "email", "passwordHash");
+        dataBinder.setDisallowedFields(BLACKLIST);
     }
 
     @GetMapping("/{userId}")
@@ -61,7 +62,6 @@ public class UserController
         {
             return ERROR_REDIRECTION;
         }
-        user.setUserId(userId);
         users.newUser(user);
         return "/{userId}";
     }
