@@ -1,7 +1,7 @@
 package com.projects.supporthub.service.implementation;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.projects.supporthub.model.User;
@@ -37,8 +37,8 @@ public class UserServiceImpl implements UserService
         return userRepo.findById(id).get();
     }
 
-    public List<User> getAllUsers()
+    public Page<User> getAllUsers(Pageable pageable)
     {
-        return userRepo.findAll();
+        return userRepo.findAll(pageable);
     }
 }

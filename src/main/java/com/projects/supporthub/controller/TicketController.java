@@ -53,15 +53,19 @@ public class TicketController
         {
             model.addAttribute("empty", "No tickets issued by this user found.");
         }
-        // create pagination if there is at least one ticket to display
+        // create pagination for display
         return addPagination(page, model, ticketsFound);
     }
 
     @GetMapping("/{ticketId}")
-    public ModelAndView displayTicketById(@PathVariable("ticketId") UUID ticketId)
+    public ModelAndView displayTicketById(@PathVariable("userId") String userId, @PathVariable("ticketId") UUID ticketId)
     {
         ModelAndView mav = new ModelAndView("ticket");
         Ticket ticketFound = tickets.getTicketById(ticketId);
+        if (ticketFound == null || (!ticketFound.getCreatedBy().equals(userId)))
+        {
+            return new ModelAndView(ERROR_REDIRECTION);
+        }
         mav.addObject("ticket", ticketFound);
         return mav;
     }
@@ -70,8 +74,8 @@ public class TicketController
     public String initTicketForm(Model model)
     {
         Ticket ticket = new Ticket();
-        model.addAttribute("newUser", ticket);
-        return "/ticketform";
+        model.addAttribute("newTicket", ticket);
+        return "/newticketform";
     }
 
     @PostMapping("/new")
@@ -88,8 +92,12 @@ public class TicketController
     @DeleteMapping("/delete/{ticketId}")
     public String deleteTicket(@PathVariable("ticketId") UUID ticketId)
     {
+        if (tickets.getTicketById(ticketId) == null)
+        {
+            return ERROR_REDIRECTION;
+        }
         tickets.deleteTicketById(ticketId);
-        return "/tickets ";
+        return "/tickets";
     }
 
     private Page<Ticket> findPaginatedForUserId(int page, String userId)
@@ -101,12 +109,12 @@ public class TicketController
 
     private String addPagination(int page, Model model, Page<Ticket> pagination) 
     {
-        model.addAttribute("ticketList", pagination);
+        model.addAttribute("ticketPage", pagination);
         List<Ticket> tickets = pagination.getContent();
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages",pagination.getTotalPages());
         model.addAttribute("totalItems", pagination.getNumberOfElements());
         model.addAttribute("ticketList", tickets);
-        return "tickets/all";
+        return "/tickets/all";
     }
 }

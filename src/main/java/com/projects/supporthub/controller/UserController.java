@@ -3,6 +3,7 @@ package com.projects.supporthub.controller;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,8 @@ public class UserController
 {
     private final UserService users;
 
+    private static final String ERROR_REDIRECTION = "redirect:/error";
+
     public UserController(UserService users)
     {
         this.users = users;
@@ -27,7 +30,7 @@ public class UserController
     @InitBinder
     public void setAllowedFields(WebDataBinder dataBinder)
     {
-        dataBinder.setDisallowedFields("userId", "passwordHash");
+        dataBinder.setDisallowedFields("userId", "email", "passwordHash");
     }
 
     @GetMapping("/{userId}")
@@ -35,15 +38,20 @@ public class UserController
     {
         ModelAndView mav = new ModelAndView("/profile");
         User userFound = users.getUserById(userId);
+        if (userFound == null)
+        {
+            new ModelAndView(ERROR_REDIRECTION);
+        }
         mav.addObject("user", userFound);
         return mav;
     }
 
     @GetMapping("/{userId}/edit")
-    public ModelAndView initUpdateForm(@PathVariable("userId") String userId)
+    public String initUpdateForm(@PathVariable("userId") String userId, Model model)
     {
         User userFound = users.getUserById(userId);
-        return new ModelAndView("edit", "user", userFound);
+        model.addAttribute("userToEdit", userFound);
+        return "/updateUserForm";
     }
 
     @PostMapping("/{userId}/edit")
@@ -51,7 +59,7 @@ public class UserController
     {
         if (result.hasErrors())
         {
-            return "redirect:/error";
+            return ERROR_REDIRECTION;
         }
         user.setUserId(userId);
         users.newUser(user);
