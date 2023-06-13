@@ -21,7 +21,7 @@ public class UserController
     private final UserService users;
 
     private static final String ERROR_REDIRECTION = "redirect:/error";
-    private static final String[] BLACKLIST = {"ticketId", "userId", "email", "passwordHash"};
+    private static final String[] BLACKLIST = {"userId", "email", "passwordHash"};
 
     public UserController(UserService users)
     {

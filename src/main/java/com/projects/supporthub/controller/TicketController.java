@@ -48,7 +48,7 @@ public class TicketController
     public String displayTicketsByUser(@RequestParam(defaultValue = "1") int page, @PathVariable("userId") String userId, BindingResult result, Model model)
     {
         Page<Ticket> ticketsFound = findPaginatedForUserId(page, userId);
-        // add the message to display when no tickets found issued by the specified user to the model
+        // add the message to display when there are no tickets issued by the specified user
         if (ticketsFound.isEmpty())
         {
             model.addAttribute("empty", "No tickets issued by this user found.");
@@ -60,7 +60,7 @@ public class TicketController
     @GetMapping("/{ticketId}")
     public ModelAndView displayTicketById(@PathVariable("userId") String userId, @PathVariable("ticketId") UUID ticketId)
     {
-        ModelAndView mav = new ModelAndView("ticket");
+        ModelAndView mav = new ModelAndView("ticketinfo");
         Ticket ticketFound = tickets.getTicketById(ticketId);
         if (ticketFound == null || (!ticketFound.getCreatedBy().equals(userId)))
         {

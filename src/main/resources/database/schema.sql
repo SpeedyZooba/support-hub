@@ -23,3 +23,9 @@ CREATE TABLE IF NOT EXISTS tickets (
     response_date   DATE
 );
 CREATE INDEX ON tickets(creator_id);
+
+CREATE TABLE IF NOT EXISTS notices (
+    notice_id       INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    notice_date     DATE,
+    announcement    TEXT
+);

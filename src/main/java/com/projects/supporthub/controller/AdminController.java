@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.projects.supporthub.model.Notice;
 import com.projects.supporthub.model.Ticket;
 import com.projects.supporthub.model.User;
 import com.projects.supporthub.model.Ticket.Status;
+import com.projects.supporthub.service.NoticeService;
 import com.projects.supporthub.service.TicketService;
 import com.projects.supporthub.service.UserService;
 
@@ -34,20 +36,67 @@ public class AdminController
 {
     private final UserService users;
     private final TicketService tickets;
+    private final NoticeService notices;
 
     private static final String ERROR_REDIRECTION = "redirect:/error";
-    private static final String[] BLACKLIST = {"ticketId", "userId", "email", "passwordHash"};
+    private static final String[] BLACKLIST = {"ticketId", "noticeId", "userId", "email", "passwordHash"};
 
-    public AdminController(UserService users, TicketService tickets)
+    public AdminController(UserService users, TicketService tickets, NoticeService notices)
     {
         this.users = users;
         this.tickets = tickets;
+        this.notices = notices;
     }
 
     @InitBinder
     public void setAllowedFields(WebDataBinder binder)
     {
         binder.setDisallowedFields(BLACKLIST);
+    }
+
+    @GetMapping("/notices")
+    public String displayAllNotices(@RequestParam(defaultValue = "1") int page, BindingResult result, Model model)
+    {
+        Page<Notice> noticesFound = findAllNoticesPaginated(page);
+        // add the message to display when there are no records of any notices
+        if (noticesFound.isEmpty())
+        {
+            model.addAttribute("empty", "No notices found.");
+        }
+        // create pagination for display
+        return addNoticePagination(page, model, noticesFound);
+    }
+
+    @GetMapping("/notices/{noticeId}")
+    public ModelAndView displayNoticeById(@PathVariable("noticeId") int noticeId)
+    {
+        ModelAndView mav = new ModelAndView("noticeinfo");
+        Notice noticeFound = notices.getNoticeById(noticeId);
+        if (noticeFound == null)
+        {
+            return new ModelAndView(ERROR_REDIRECTION);
+        }
+        mav.addObject("notice", noticeFound);
+        return mav;
+    }
+    
+    @GetMapping("/notices/new")
+    public String initNoticeForm(Model model)
+    {
+        Notice notice = new Notice();
+        model.addAttribute("newNotice", notice);
+        return "/newnoticeform";
+    }
+
+    @PostMapping("/notices/new")
+    public String processNoticeForm(@Valid Notice notice, BindingResult result)
+    {
+        if (result.hasErrors())
+        {
+            return ERROR_REDIRECTION;
+        }
+        notices.newNotice(notice);
+        return "/notices";
     }
 
     @GetMapping("/tickets")
@@ -66,7 +115,7 @@ public class AdminController
     @GetMapping("/tickets/{ticketId}")
     public ModelAndView displayTicketById(@PathVariable("ticketId") UUID ticketId)
     {
-        ModelAndView mav = new ModelAndView("info");
+        ModelAndView mav = new ModelAndView("ticketinfo");
         Ticket ticketFound = tickets.getTicketById(ticketId);
         if (ticketFound == null)
         {
@@ -123,7 +172,7 @@ public class AdminController
     @GetMapping("/users/{userId}")
     public ModelAndView displayUserById(@PathVariable("userId") String userId)
     {
-        ModelAndView mav = new ModelAndView("details");
+        ModelAndView mav = new ModelAndView("userdetails");
         User userFound = users.getUserById(userId);
         if (userFound == null)
         {
@@ -161,6 +210,24 @@ public class AdminController
         }
         users.deleteUserById(userId);
         return "/users";
+    }
+
+    private Page<Notice> findAllNoticesPaginated(int page) 
+    {
+        int pageSize = 10;
+        Pageable pages = PageRequest.of(page, pageSize, Sort.by("noticeDate").ascending());
+        return notices.getAllNotices(pages);
+    }
+
+    private String addNoticePagination(int page, Model model, Page<Notice> pagination) 
+    {
+        model.addAttribute("noticePage", pagination);
+        List<Notice> notices = pagination.getContent();
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", pagination.getTotalPages());
+        model.addAttribute("totalItems", pagination.getNumberOfElements());
+        model.addAttribute("noticeList", notices);
+        return "/notices/all";
     }
 
     private Page<Ticket> findAllTicketsPaginated(int page) 
