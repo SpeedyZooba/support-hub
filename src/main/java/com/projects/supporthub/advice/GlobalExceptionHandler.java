@@ -17,7 +17,7 @@ public class GlobalExceptionHandler
     {
         ModelAndView mav = new ModelAndView("notfound");
         mav.addObject("errorCode", HttpStatus.NOT_FOUND.value());
-        mav.addObject("errorMsg", "Notice not found.");
+        mav.addObject("errorMsg", HttpStatus.NOT_FOUND.getReasonPhrase());
         return mav;
     }
 
@@ -26,7 +26,7 @@ public class GlobalExceptionHandler
     {
         ModelAndView mav = new ModelAndView("notfound");
         mav.addObject("errorCode", HttpStatus.NOT_FOUND.value());
-        mav.addObject("errorMsg", "Ticket not found.");
+        mav.addObject("errorMsg", HttpStatus.NOT_FOUND.getReasonPhrase());
         return mav;
     }
 
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler
     {
         ModelAndView mav = new ModelAndView("notfound");
         mav.addObject("errorCode", HttpStatus.NOT_FOUND.value());
-        mav.addObject("errorMsg", "User not found.");
+        mav.addObject("errorMsg", HttpStatus.NOT_FOUND.getReasonPhrase());
         return mav;
     }
 }
