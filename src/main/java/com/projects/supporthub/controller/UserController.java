@@ -39,10 +39,6 @@ public class UserController
     {
         ModelAndView mav = new ModelAndView("/profile");
         User userFound = users.getUserById(userId);
-        if (userFound == null)
-        {
-            new ModelAndView(ERROR_REDIRECTION);
-        }
         mav.addObject("user", userFound);
         return mav;
     }

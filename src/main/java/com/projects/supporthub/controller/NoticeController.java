@@ -25,7 +25,6 @@ import com.projects.supporthub.service.NoticeService;
 public class NoticeController 
 {
     private final NoticeService notices;
-    private static final String ERROR_REDIRECTION = "redirect:/error";
 
     public NoticeController(NoticeService notices)
     {
@@ -56,10 +55,6 @@ public class NoticeController
     {
         ModelAndView mav = new ModelAndView("noticeinfo");
         Notice noticeFound = notices.getNoticeById(noticeId);
-        if (noticeFound == null)
-        {
-            return new ModelAndView(ERROR_REDIRECTION);
-        }
         mav.addObject("notice", noticeFound);
         return mav;
     }

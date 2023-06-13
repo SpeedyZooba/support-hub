@@ -6,13 +6,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.projects.supporthub.exception.TicketNotFoundException;
+import com.projects.supporthub.exception.UserNotFoundException;
 import com.projects.supporthub.model.Ticket;
 import com.projects.supporthub.repository.TicketRepository;
+import com.projects.supporthub.repository.UserRepository;
 import com.projects.supporthub.service.TicketService;
 
 @Service
 public class TicketServiceImpl implements TicketService
 {
+    private UserRepository userRepo;
     private TicketRepository ticketRepo;
 
     public TicketServiceImpl(TicketRepository ticketRepo)
@@ -27,17 +31,38 @@ public class TicketServiceImpl implements TicketService
 
     public void deleteTicketById(UUID id)
     {
-        ticketRepo.deleteById(id);
+        if (ticketRepo.findById(id).isEmpty())
+        {
+            throw new TicketNotFoundException("Ticket not found.");
+        }
+        else
+        {
+            ticketRepo.deleteById(id);
+        }
     }
 
     public Ticket getTicketById(UUID id)
     {
-        return ticketRepo.findById(id).get();
+        if (ticketRepo.findById(id).isEmpty())
+        {
+            throw new TicketNotFoundException("Ticket not found.");
+        }
+        else
+        {
+            return ticketRepo.findById(id).get();
+        }
     }
 
     public Page<Ticket> getTicketByUserId(String id, Pageable pageable)
     {
-        return ticketRepo.findByCreatorId(id, pageable);
+        if (userRepo.findById(id).isEmpty())
+        {
+            throw new UserNotFoundException("No user found for ticket display.");
+        }
+        else
+        {
+            return ticketRepo.findByCreatorId(id, pageable);
+        }
     }
 
     public Page<Ticket> getAllTickets(Pageable pageable)

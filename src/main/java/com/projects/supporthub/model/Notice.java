@@ -1,5 +1,6 @@
 package com.projects.supporthub.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -11,7 +12,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "notices")
-public class Notice 
+public class Notice implements Serializable
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

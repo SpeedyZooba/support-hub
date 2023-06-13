@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.projects.supporthub.exception.NoticeNotFoundException;
 import com.projects.supporthub.model.Notice;
 import com.projects.supporthub.repository.NoticeRepository;
 import com.projects.supporthub.service.NoticeService;
@@ -26,12 +27,26 @@ public class NoticeServiceImpl implements NoticeService
 
     public void deleteNoticeById(int id)
     {
-        noticeRepo.deleteById(id);
+        if (noticeRepo.findById(id).isEmpty())
+        {
+            throw new NoticeNotFoundException("Notice not found.");
+        }
+        else
+        {
+            noticeRepo.deleteById(id);
+        }
     }
 
     public Notice getNoticeById(int id)
     {
-        return noticeRepo.findById(id).get();
+        if (noticeRepo.findById(id).isEmpty())
+        {
+            throw new NoticeNotFoundException("Notice not found.");
+        }
+        else
+        {
+            return noticeRepo.findById(id).get();
+        }
     }
 
     public Page<Notice> getAllNotices(Pageable pageable)

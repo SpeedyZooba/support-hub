@@ -62,7 +62,7 @@ public class TicketController
     {
         ModelAndView mav = new ModelAndView("ticketinfo");
         Ticket ticketFound = tickets.getTicketById(ticketId);
-        if (ticketFound == null || (!ticketFound.getCreatedBy().equals(userId)))
+        if (!ticketFound.getCreatedBy().equals(userId))
         {
             return new ModelAndView(ERROR_REDIRECTION);
         }
@@ -92,10 +92,6 @@ public class TicketController
     @DeleteMapping("/delete/{ticketId}")
     public String deleteTicket(@PathVariable("ticketId") UUID ticketId)
     {
-        if (tickets.getTicketById(ticketId) == null)
-        {
-            return ERROR_REDIRECTION;
-        }
         tickets.deleteTicketById(ticketId);
         return "/tickets";
     }

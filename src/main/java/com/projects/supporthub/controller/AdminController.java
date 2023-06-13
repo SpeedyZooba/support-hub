@@ -72,10 +72,6 @@ public class AdminController
     {
         ModelAndView mav = new ModelAndView("noticeinfo");
         Notice noticeFound = notices.getNoticeById(noticeId);
-        if (noticeFound == null)
-        {
-            return new ModelAndView(ERROR_REDIRECTION);
-        }
         mav.addObject("notice", noticeFound);
         return mav;
     }
@@ -117,10 +113,6 @@ public class AdminController
     {
         ModelAndView mav = new ModelAndView("ticketinfo");
         Ticket ticketFound = tickets.getTicketById(ticketId);
-        if (ticketFound == null)
-        {
-            return new ModelAndView(ERROR_REDIRECTION);
-        }
         mav.addObject("ticket", ticketFound);
         return mav;
     }
@@ -148,10 +140,6 @@ public class AdminController
     @DeleteMapping("/tickets/{ticketId}/delete")
     public String deleteTicket(@PathVariable("ticketId") UUID ticketId)
     {
-        if (tickets.getTicketById(ticketId) == null)
-        {
-            return ERROR_REDIRECTION;
-        }
         tickets.deleteTicketById(ticketId);
         return "/tickets";
     }
@@ -174,10 +162,6 @@ public class AdminController
     {
         ModelAndView mav = new ModelAndView("userdetails");
         User userFound = users.getUserById(userId);
-        if (userFound == null)
-        {
-            return new ModelAndView(ERROR_REDIRECTION);
-        }
         mav.addObject("user", userFound);
         return mav;
     }
@@ -204,10 +188,6 @@ public class AdminController
     @DeleteMapping("/users/{userId}/delete")
     public String deleteUser(@PathVariable("userId") String userId)
     {
-        if (users.getUserById(userId) == null)
-        {
-            return ERROR_REDIRECTION;
-        }
         users.deleteUserById(userId);
         return "/users";
     }
