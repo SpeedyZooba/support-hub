@@ -15,7 +15,7 @@ public class GlobalExceptionHandler
     @ExceptionHandler(value = NoticeNotFoundException.class)
     public ModelAndView handleNoticeNotFoundException(NoticeNotFoundException exception)
     {
-        ModelAndView mav = new ModelAndView("notfound");
+        ModelAndView mav = new ModelAndView("error/notfound");
         mav.addObject("errorCode", HttpStatus.NOT_FOUND.value());
         mav.addObject("errorMsg", HttpStatus.NOT_FOUND.getReasonPhrase());
         return mav;
@@ -24,7 +24,7 @@ public class GlobalExceptionHandler
     @ExceptionHandler(value = TicketNotFoundException.class)
     public ModelAndView handleTicketNotFoundException(TicketNotFoundException exception)
     {
-        ModelAndView mav = new ModelAndView("notfound");
+        ModelAndView mav = new ModelAndView("error/notfound");
         mav.addObject("errorCode", HttpStatus.NOT_FOUND.value());
         mav.addObject("errorMsg", HttpStatus.NOT_FOUND.getReasonPhrase());
         return mav;
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler
     @ExceptionHandler(value = UserNotFoundException.class)
     public ModelAndView handleUserNotFoundException(UserNotFoundException exception)
     {
-        ModelAndView mav = new ModelAndView("notfound");
+        ModelAndView mav = new ModelAndView("error/notfound");
         mav.addObject("errorCode", HttpStatus.NOT_FOUND.value());
         mav.addObject("errorMsg", HttpStatus.NOT_FOUND.getReasonPhrase());
         return mav;
