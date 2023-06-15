@@ -13,6 +13,17 @@ CREATE TABLE IF NOT EXISTS users (
     title           TEXT
 );
 
+CREATE TABLE IF NOT EXISTS roles (
+    id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    role_name       VARCHAR(5)
+);
+
+CREATE TABLE IF NOT EXISTS user_roles (
+    user_id         INT REFERENCES users(id_number),
+    role_id         INT REFERENCES roles(id),
+    PRIMARY KEY (user_id, role_id)  
+);
+
 CREATE TABLE IF NOT EXISTS tickets (
     ticket_num      uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
     category        TEXT,

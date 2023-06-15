@@ -5,33 +5,13 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.projects.supporthub.exception.NoticeNotFoundException;
-import com.projects.supporthub.exception.TicketNotFoundException;
-import com.projects.supporthub.exception.UserNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler 
 {
-    @ExceptionHandler(value = NoticeNotFoundException.class)
-    public ModelAndView handleNoticeNotFoundException(NoticeNotFoundException exception)
-    {
-        ModelAndView mav = new ModelAndView("error/notfound");
-        mav.addObject("errorCode", HttpStatus.NOT_FOUND.value());
-        mav.addObject("errorMsg", HttpStatus.NOT_FOUND.getReasonPhrase());
-        return mav;
-    }
-
-    @ExceptionHandler(value = TicketNotFoundException.class)
-    public ModelAndView handleTicketNotFoundException(TicketNotFoundException exception)
-    {
-        ModelAndView mav = new ModelAndView("error/notfound");
-        mav.addObject("errorCode", HttpStatus.NOT_FOUND.value());
-        mav.addObject("errorMsg", HttpStatus.NOT_FOUND.getReasonPhrase());
-        return mav;
-    }
-
-    @ExceptionHandler(value = UserNotFoundException.class)
-    public ModelAndView handleUserNotFoundException(UserNotFoundException exception)
+    @ExceptionHandler(value = EntityNotFoundException.class)
+    public ModelAndView handleEntityNotFoundException(EntityNotFoundException exception)
     {
         ModelAndView mav = new ModelAndView("error/notfound");
         mav.addObject("errorCode", HttpStatus.NOT_FOUND.value());

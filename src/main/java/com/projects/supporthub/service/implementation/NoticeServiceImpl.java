@@ -7,10 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.projects.supporthub.exception.NoticeNotFoundException;
 import com.projects.supporthub.model.Notice;
 import com.projects.supporthub.repository.NoticeRepository;
 import com.projects.supporthub.service.NoticeService;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class NoticeServiceImpl implements NoticeService
@@ -38,7 +39,7 @@ public class NoticeServiceImpl implements NoticeService
         if (noticeRepo.findById(id).isEmpty())
         {
             log.error("Recevied invalid noticeId.");
-            throw new NoticeNotFoundException("Notice not found.");
+            throw new EntityNotFoundException("Notice not found.");
         }
         else
         {
@@ -54,7 +55,7 @@ public class NoticeServiceImpl implements NoticeService
         if (noticeRepo.findById(id).isEmpty())
         {
             log.error("Received invalid noticeId.");
-            throw new NoticeNotFoundException("Notice not found.");
+            throw new EntityNotFoundException("Notice not found.");
         }
         else
         {

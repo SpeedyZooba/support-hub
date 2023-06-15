@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.projects.supporthub.model.User;
 import com.projects.supporthub.service.UserService;
 
 @Controller
+@RequestMapping("/{userId}")
 public class UserController 
 {
     private final UserService users;
@@ -37,7 +39,7 @@ public class UserController
         dataBinder.setDisallowedFields(BLACKLIST);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping
     public ModelAndView displayUserDetails(@PathVariable("userId") String userId)
     {
         log.info("displayUserDetails has begun execution.");
@@ -48,7 +50,7 @@ public class UserController
         return mav;
     }
 
-    @GetMapping("/{userId}/edit")
+    @GetMapping("/edit")
     public String initUpdateForm(@PathVariable("userId") String userId, Model model)
     {
         log.info("initUpdateForm has begun execution.");
@@ -58,7 +60,7 @@ public class UserController
         return "/updateUserForm";
     }
 
-    @PostMapping("/{userId}/edit")
+    @PostMapping("/edit")
     public String processUpdateForm(@Valid User user, BindingResult result, @PathVariable("userId") String userId)
     {
         log.info("processUpdateForm has begun execution.");

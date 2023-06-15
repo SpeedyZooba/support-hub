@@ -8,12 +8,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.projects.supporthub.exception.TicketNotFoundException;
-import com.projects.supporthub.exception.UserNotFoundException;
 import com.projects.supporthub.model.Ticket;
 import com.projects.supporthub.repository.TicketRepository;
 import com.projects.supporthub.repository.UserRepository;
 import com.projects.supporthub.service.TicketService;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class TicketServiceImpl implements TicketService
@@ -42,7 +42,7 @@ public class TicketServiceImpl implements TicketService
         if (ticketRepo.findById(id).isEmpty())
         {
             log.error("Received invalid ticketId.");
-            throw new TicketNotFoundException("Ticket not found.");
+            throw new EntityNotFoundException("The requested ticket was not found.");
         }
         else
         {
@@ -58,7 +58,7 @@ public class TicketServiceImpl implements TicketService
         if (ticketRepo.findById(id).isEmpty())
         {
             log.error("Received invalid ticketId.");
-            throw new TicketNotFoundException("Ticket not found.");
+            throw new EntityNotFoundException("The requested ticket was not found.");
         }
         else
         {
@@ -74,7 +74,7 @@ public class TicketServiceImpl implements TicketService
         if (userRepo.findById(id).isEmpty())
         {
             log.error("Received invalid userId.");
-            throw new UserNotFoundException("No user found for ticket display.");
+            throw new EntityNotFoundException("No user found for ticket display.");
         }
         else
         {
