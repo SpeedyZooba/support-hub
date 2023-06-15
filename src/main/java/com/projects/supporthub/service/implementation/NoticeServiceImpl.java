@@ -36,7 +36,7 @@ public class NoticeServiceImpl implements NoticeService
     {
         log.debug("Inside service method deleteNoticeById.");
         log.debug("Service method deleteNoticeById is about to call repo method findById.");
-        if (noticeRepo.findById(id).isEmpty())
+        if (noticeRepo.findById(id).isPresent())
         {
             log.error("Recevied invalid noticeId.");
             throw new EntityNotFoundException("Notice not found.");
@@ -52,7 +52,7 @@ public class NoticeServiceImpl implements NoticeService
     {
         log.debug("Inside service method getNoticeById.");
         log.debug("Service method getNoticeById is about to call repo method findById.");
-        if (noticeRepo.findById(id).isEmpty())
+        if (noticeRepo.findById(id).isPresent())
         {
             log.error("Received invalid noticeId.");
             throw new EntityNotFoundException("Notice not found.");

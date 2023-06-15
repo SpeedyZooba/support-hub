@@ -13,8 +13,8 @@ import com.projects.supporthub.model.Ticket;
 public interface TicketRepository extends JpaRepository<Ticket, UUID>
 {
     /**
-     * Retrieves tickets issued by the specific user.
-     * @param createdBy id of the User who issued the ticket
+     * Retrieves {@link Ticket}s issued by the specific {@link User}.
+     * @param createdBy id of the {@link User} who issued the {@link Ticket}
      * @return a Collection of {@link Ticket}s if one or more found
      */
     @Query("SELECT ticket FROM Ticket ticket WHERE ticket.createdBy = :createdBy")
@@ -22,8 +22,8 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID>
     public Page<Ticket> findByCreatorId(String createdBy, Pageable pageable);
 
     /**
-     * Deletes tickets issued by the specific user.
-     * @param createdBy id of the {@link User} who issued the ticket
+     * Deletes {@link Ticket}s issued by the specific {@link User}.
+     * @param createdBy id of the {@link User} who issued the {@link Ticket}
      */
     @Query("DELETE FROM Ticket ticket WHERE ticket.createdBy = :createdBy")
     public void deleteByCreatorId(String createdBy);

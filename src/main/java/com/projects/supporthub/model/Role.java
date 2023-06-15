@@ -1,5 +1,7 @@
 package com.projects.supporthub.model;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +11,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "roles")
-public class Role 
+public class Role implements GrantedAuthority
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,5 +39,10 @@ public class Role
     public void setRoleName(String roleName) 
     {
         this.roleName = roleName;
+    }
+
+    public String getAuthority()
+    {
+        return roleName;
     }
 }

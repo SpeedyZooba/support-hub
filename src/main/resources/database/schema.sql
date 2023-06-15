@@ -5,13 +5,14 @@ CREATE TYPE stat AS ENUM('PENDING', 'ANSWERED');
 CREATE TABLE IF NOT EXISTS users (
     id_number       VARCHAR(10) PRIMARY KEY,
     email           TEXT,
-    pass_hash       TEXT,
+    pass            BYTEA,
     first_name      TEXT,
     last_name       TEXT,
     date_of_birth   DATE,
-    department      TEXT,
-    title           TEXT
+    department      VARCHAR(63),
+    title           VARCHAR(63)
 );
+CREATE INDEX ON users(email);
 
 CREATE TABLE IF NOT EXISTS roles (
     id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -26,9 +27,9 @@ CREATE TABLE IF NOT EXISTS user_roles (
 
 CREATE TABLE IF NOT EXISTS tickets (
     ticket_num      uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
-    category        TEXT,
+    category        VARCHAR(63),
     issue           TEXT,
-    creator_id      TEXT,
+    creator_id      VARCHAR(10),
     creation_date   DATE,
     ticket_status   stat,
     response_date   DATE

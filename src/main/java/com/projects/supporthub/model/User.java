@@ -21,11 +21,14 @@ public class User implements Serializable
     @Column(name = "id_number", updatable = false, nullable = false)
     private String userId;
 
+    /**
+     * Substitute for username/nickname in this system.
+     */
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "pass_hash", nullable = false)
-    private String passwordHash;
+    @Column(name = "pass", nullable = false)
+    private String password;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -56,9 +59,9 @@ public class User implements Serializable
         return email;
     }
 
-    public String getPasswordHash() 
+    public String getPassword() 
     {
-        return passwordHash;
+        return password;
     }
 
     public String getFirstName() 
@@ -106,9 +109,9 @@ public class User implements Serializable
         this.email = email;
     }
 
-    public void setPasswordHash(String passwordHash) 
+    public void setPassword(String password) 
     {
-        this.passwordHash = passwordHash;
+        this.password = password;
     }
     
     public void setFirstName(String firstName) 

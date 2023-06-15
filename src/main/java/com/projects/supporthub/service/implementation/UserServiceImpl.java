@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService
     {
         log.debug("Inside service method deleteUserById.");
         log.debug("Service method deleteUserById is about to call repo method findById.");
-        if (userRepo.findById(id).isEmpty())
+        if (userRepo.findById(id).isPresent())
         {
             log.error("Received invalid userId.");
             throw new EntityNotFoundException("The requested user was not found.");
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService
     {
         log.debug("Inside service method getUserById.");
         log.debug("Service method getUserById is about to call repo method findById.");
-        if (userRepo.findById(id).isEmpty())
+        if (userRepo.findById(id).isPresent())
         {
             log.debug("Received invalid userId.");
             throw new EntityNotFoundException("The requested user not found.");

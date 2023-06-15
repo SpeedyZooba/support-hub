@@ -14,7 +14,8 @@ public class SecurityConfig
         http.
             authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/adminpanel/**").hasRole("ADMIN")
-                .requestMatchers("/notices").hasAnyRole("USER, ADMIN"));
+                .requestMatchers("/notices").hasAnyRole("USER, ADMIN")
+                );
         return http.build();
     }
 }
