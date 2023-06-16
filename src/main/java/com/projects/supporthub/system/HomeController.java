@@ -9,7 +9,7 @@ import com.projects.supporthub.service.SecurityService;
 import com.projects.supporthub.service.UserService;
 
 @Controller
-public class HomeController 
+public class HomeController
 {
     private final UserService users;
     private final SecurityService verifier;
