@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,19 +27,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.projects.supporthub.model.Ticket;
+import com.projects.supporthub.service.SecurityService;
 import com.projects.supporthub.service.TicketService;
 
 @Controller
+@EnableMethodSecurity
 @RequestMapping("/{userId}/tickets")
-public class TicketController 
+@PreAuthorize("@verifier.userIdVerification(#userId)")
+public class TicketController
 {
+    private final SecurityService verifier;
     private final TicketService tickets;
 
     private static final String ERROR_REDIRECTION = "redirect:/error";
     private static final Logger log = LoggerFactory.getLogger(TicketController.class);
 
-    public TicketController(TicketService tickets)
+    public TicketController(SecurityService verifier, TicketService tickets)
     {
+        this.verifier = verifier;
         this.tickets = tickets;
     }
 
@@ -64,16 +71,12 @@ public class TicketController
     }
 
     @GetMapping("/{ticketId}")
-    public ModelAndView displayTicketById(@PathVariable("userId") String userId, @PathVariable("ticketId") UUID ticketId)
+    @PreAuthorize("@verifier.ticketIdVerification(#ticketId)")
+    public ModelAndView displayTicketById(@PathVariable("ticketId") UUID ticketId)
     {
         log.info("displayTicketById has begun execution.");
         ModelAndView mav = new ModelAndView("ticketinfo");
         Ticket ticketFound = tickets.getTicketById(ticketId);
-        if (!ticketFound.getCreatedBy().equals(userId))
-        {
-            log.error("Unauthorized access.");
-            return new ModelAndView(ERROR_REDIRECTION);
-        }
         mav.addObject("ticket", ticketFound);
         log.info("displayTicketById is about to finish execution.");
         return mav;
@@ -104,6 +107,7 @@ public class TicketController
     }
 
     @DeleteMapping("/delete/{ticketId}")
+    @PreAuthorize("@verifier.ticketIdVerification(#ticketId)")
     public String deleteTicket(@PathVariable("ticketId") UUID ticketId)
     {
         log.info("deleteTicktet has begun execution.");

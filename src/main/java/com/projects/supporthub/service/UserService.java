@@ -10,5 +10,6 @@ public interface UserService
     public void newUser(User user);
     public void deleteUserById(String id);
     public User getUserById(String id);
+    public User getUserByUsername(String username);
     public Page<User> getAllUsers(Pageable pageable);
 }

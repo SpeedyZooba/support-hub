@@ -39,7 +39,7 @@ public class TicketServiceImpl implements TicketService
     {
         log.debug("Inside service method deleteTicketById.");
         log.debug("Service method deleteTicketById is about to call repo method findById.");
-        if (ticketRepo.findById(id).isPresent())
+        if (!ticketRepo.findById(id).isPresent())
         {
             log.error("Received invalid ticketId.");
             throw new EntityNotFoundException("The requested ticket was not found.");
@@ -55,7 +55,7 @@ public class TicketServiceImpl implements TicketService
     {
         log.debug("Inside service method getTicketById.");
         log.debug("Service method getTicketById is about to call repo method findById.");
-        if (ticketRepo.findById(id).isPresent())
+        if (!ticketRepo.findById(id).isPresent())
         {
             log.error("Received invalid ticketId.");
             throw new EntityNotFoundException("The requested ticket was not found.");
@@ -71,7 +71,7 @@ public class TicketServiceImpl implements TicketService
     {
         log.debug("Inside service method getTicketByUserId.");
         log.debug("Service method getTicketByUserId is about to call repo method findById.");
-        if (userRepo.findById(id).isPresent())
+        if (!userRepo.findById(id).isPresent())
         {
             log.error("Received invalid userId.");
             throw new EntityNotFoundException("No user found for ticket display.");

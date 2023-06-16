@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,7 +33,6 @@ import com.projects.supporthub.model.Ticket.Status;
 import com.projects.supporthub.service.NoticeService;
 import com.projects.supporthub.service.TicketService;
 import com.projects.supporthub.service.UserService;
-import com.projects.supporthub.utils.PasswordEncryptionUtil;
 
 @Controller
 @RequestMapping("/adminpanel")
@@ -40,18 +41,17 @@ public class AdminController
     private final UserService users;
     private final TicketService tickets;
     private final NoticeService notices;
-    private final PasswordEncryptionUtil encryptor;
 
     private static final String ERROR_REDIRECTION = "redirect:/error";
     private static final String[] BLACKLIST = {"ticketId", "noticeId", "userId", "email", "passwordHash"};
+    private static final PasswordEncoder encryptor = new BCryptPasswordEncoder();
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
 
-    public AdminController(UserService users, TicketService tickets, NoticeService notices, PasswordEncryptionUtil encryptor)
+    public AdminController(UserService users, TicketService tickets, NoticeService notices)
     {
         this.users = users;
         this.tickets = tickets;
         this.notices = notices;
-        this.encryptor = encryptor;
     }
 
     @InitBinder
@@ -218,7 +218,7 @@ public class AdminController
             log.error("A binding error has occurred.");
             return ERROR_REDIRECTION;
         }
-        user.setPassword(encryptor.encryptPassword(user.getPassword()));
+        user.setPassword(encryptor.encode(user.getPassword()));
         users.newUser(user);
         log.info("processUserForm is about to finish execution.");
         return new StringBuilder().append("/users/").append(user.getUserId()).toString();

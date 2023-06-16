@@ -4,15 +4,17 @@ import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Service;
 
 import com.projects.supporthub.model.User;
 import com.projects.supporthub.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
+@Service
 public class UserDetailsServiceImpl implements UserDetailsService
 {
-    private final UserRepository userRepo;
+    private UserRepository userRepo;
 
     public UserDetailsServiceImpl(UserRepository userRepo)
     {
@@ -25,14 +27,13 @@ public class UserDetailsServiceImpl implements UserDetailsService
         Optional<User> userToLoad = userRepo.findByEmail(username);
         if (!userToLoad.isPresent())
         {
-            throw new EntityNotFoundException("No user with such email exists.");
+            throw new EntityNotFoundException("No such user exists.");
         }
         else
         {
             User user = userToLoad.get();
             UserDetails details = new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), user.getRoles());
             return details;
-
         }
     }
 }

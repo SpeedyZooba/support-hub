@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService
     {
         log.debug("Inside service method deleteUserById.");
         log.debug("Service method deleteUserById is about to call repo method findById.");
-        if (userRepo.findById(id).isPresent())
+        if (!userRepo.findById(id).isPresent())
         {
             log.error("Received invalid userId.");
             throw new EntityNotFoundException("The requested user was not found.");
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService
     {
         log.debug("Inside service method getUserById.");
         log.debug("Service method getUserById is about to call repo method findById.");
-        if (userRepo.findById(id).isPresent())
+        if (!userRepo.findById(id).isPresent())
         {
             log.debug("Received invalid userId.");
             throw new EntityNotFoundException("The requested user not found.");
@@ -65,6 +65,22 @@ public class UserServiceImpl implements UserService
         {
             log.debug("Service method getUserById calls repo method findById for return.");
             return userRepo.findById(id).get();
+        }
+    }
+
+    public User getUserByUsername(String username)
+    {
+        log.debug("Inside service method getUserByUsername");
+        log.debug("Service method getUserByUsername is about to call repo method findByEmail");
+        if (!userRepo.findByEmail(username).isPresent())
+        {
+            log.debug("Received invalid email.");
+            throw new EntityNotFoundException("The requested user was not found.");
+        }
+        else
+        {
+            log.debug("Service method getUserByUsername calls repo method findByEmail for return.");
+            return userRepo.findByEmail(username).get();
         }
     }
 

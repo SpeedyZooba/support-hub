@@ -4,6 +4,8 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,20 +18,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.projects.supporthub.model.User;
+import com.projects.supporthub.service.SecurityService;
 import com.projects.supporthub.service.UserService;
 
 @Controller
+@EnableMethodSecurity
 @RequestMapping("/{userId}")
+@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN') and #userId == @verifier.userIdVerification(#userId)")
 public class UserController 
 {
+    private final SecurityService verifier;
     private final UserService users;
 
     private static final String ERROR_REDIRECTION = "redirect:/error";
     private static final String[] BLACKLIST = {"userId", "email", "passwordHash"};
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    public UserController(UserService users)
+    public UserController(SecurityService verifier, UserService users)
     {
+        this.verifier = verifier;
         this.users = users;
     }
 
