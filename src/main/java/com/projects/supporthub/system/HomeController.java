@@ -1,10 +1,13 @@
 package com.projects.supporthub.system;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.projects.supporthub.model.User;
 import com.projects.supporthub.service.SecurityService;
 import com.projects.supporthub.service.UserService;
 
@@ -14,6 +17,7 @@ public class HomeController
     private final UserService users;
     private final SecurityService verifier;
 
+    private static final Logger log = LoggerFactory.getLogger(HomeController.class);
     public HomeController(UserService users, SecurityService verifier)
     {
         this.users = users;
@@ -21,18 +25,30 @@ public class HomeController
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam("email") String email, @RequestParam("password") String password, Model model)
+    public String login(@RequestParam("username") String username, @RequestParam("password") String password, RedirectAttributes redirectAttributes)
     {
-        boolean response = verifier.login(email, password);
+        log.info("Passing credentials for authentication.");
+        boolean response = verifier.login(username, password);
         if (response)
         {
-            model.addAttribute("successMessage", "Successfully logged in.");
-            return new StringBuilder().append("/").append(users.getUserByUsername(password).getUserId()).toString();
+            User userToLogin = users.getUserByUsername(username);
+            log.info("Authentication success.");
+            if (userToLogin.getFirstLogin() == true)
+            {
+                userToLogin.setFirstLogin(false);
+                return new StringBuilder().append("redirect:/").append(userToLogin.getUserId()).append("/setpassword").toString();
+            }
+            else
+            {
+                log.info("Successfully logged in.");
+                return new StringBuilder().append("redirect:/").append(userToLogin.getUserId()).toString();
+            }
         }
         else
         {
-            model.addAttribute("failureMessage", "Invalid email or password.");
-            return "/login";
+            log.info("Authentication fail.");
+            redirectAttributes.addFlashAttribute("failureMessage", "Invalid username or password.");
+            return "redirect:/login";
         }
     }
 }

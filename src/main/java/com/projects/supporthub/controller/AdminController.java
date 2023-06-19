@@ -94,7 +94,7 @@ public class AdminController
         Notice notice = new Notice();
         model.addAttribute("newNotice", notice);
         log.info("initNoticeForm is about to finish execution.");
-        return "/newnoticeform";
+        return "newnoticeform";
     }
 
     @PostMapping("/notices/new")
@@ -108,7 +108,7 @@ public class AdminController
         }
         notices.newNotice(notice);
         log.info("processNoticeForm is about to finish execution.");
-        return "/notices";
+        return "redirect:/notices";
     }
 
     @GetMapping("/tickets")
@@ -145,7 +145,7 @@ public class AdminController
         Ticket ticket = tickets.getTicketById(ticketId);
         model.addAttribute("response", ticket);
         log.info("initUpdateForm is about to finish execution.");
-        return "/response";
+        return "response";
     }
 
     @PostMapping("/tickets/{tickedId}/update")
@@ -160,7 +160,7 @@ public class AdminController
         ticket.setStatus(Status.ANSWERED);
         tickets.newTicket(ticket);
         log.info("processUpdateForm is about to finish execution.");
-        return "/tickets";
+        return "return:/tickets";
     }
 
     @DeleteMapping("/tickets/{ticketId}/delete")
@@ -169,7 +169,7 @@ public class AdminController
         log.info("deleteTicket has begun execution.");
         tickets.deleteTicketById(ticketId);
         log.info("deleteTicket is about to finish execution.");
-        return "/tickets";
+        return "return:/tickets";
     }
 
     @GetMapping("/users")
@@ -206,7 +206,7 @@ public class AdminController
         User user = new User();
         model.addAttribute("newUser", user);
         log.info("initUserForm is about to finish execution.");
-        return "/newuserform";
+        return "newuserform";
     }
 
     @PostMapping("/users/new")
@@ -221,7 +221,7 @@ public class AdminController
         user.setPassword(encryptor.encode(user.getPassword()));
         users.newUser(user);
         log.info("processUserForm is about to finish execution.");
-        return new StringBuilder().append("/users/").append(user.getUserId()).toString();
+        return new StringBuilder().append("redirect:/users/").append(user.getUserId()).toString();
     }
 
     @DeleteMapping("/users/{userId}/delete")
@@ -230,7 +230,7 @@ public class AdminController
         log.info("deleteUser has begun execution.");
         users.deleteUserById(userId);
         log.info("deleteUser is about to finish execution.");
-        return "/users";
+        return "redirect:/users";
     }
 
     private Page<Notice> findAllNoticesPaginated(int page) 

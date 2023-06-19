@@ -89,11 +89,11 @@ public class TicketController
         Ticket ticket = new Ticket();
         model.addAttribute("newTicket", ticket);
         log.info("initTicketForm is about to finish execution.");
-        return "/newticketform";
+        return "newticketform";
     }
 
     @PostMapping("/new")
-    public String processTicketForm(@Valid Ticket ticket, BindingResult result)
+    public String processTicketForm(@Valid Ticket ticket, BindingResult result, @PathVariable("userId") String userId)
     {
         log.info("processTicketForm has begun execution.");
         if (result.hasErrors())
@@ -103,17 +103,17 @@ public class TicketController
         }
         tickets.newTicket(ticket);
         log.info("processTicketForm is about to finish execution.");
-        return "redirect:/tickets";
+        return "redirect:/{userId}/tickets";
     }
 
     @DeleteMapping("/delete/{ticketId}")
     @PreAuthorize("@verifier.ticketIdVerification(#ticketId)")
-    public String deleteTicket(@PathVariable("ticketId") UUID ticketId)
+    public String deleteTicket(@PathVariable("ticketId") UUID ticketId, @PathVariable("userId") String userId)
     {
         log.info("deleteTicktet has begun execution.");
         tickets.deleteTicketById(ticketId);
         log.info("deleteTicket is about to finish execution.");
-        return "/tickets";
+        return "redirect:/tickets";
     }
 
     private Page<Ticket> findPaginatedForUserId(int page, String userId)

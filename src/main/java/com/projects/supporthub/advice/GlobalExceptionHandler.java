@@ -1,6 +1,7 @@
 package com.projects.supporthub.advice;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
@@ -16,6 +17,15 @@ public class GlobalExceptionHandler
         ModelAndView mav = new ModelAndView("error/notfound");
         mav.addObject("errorCode", HttpStatus.NOT_FOUND.value());
         mav.addObject("errorMsg", HttpStatus.NOT_FOUND.getReasonPhrase());
+        return mav;
+    }
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    public ModelAndView handleAccessDeniedException(AccessDeniedException exception)
+    {
+        ModelAndView mav = new ModelAndView("error/forbidden");
+        mav.addObject("errorCode", HttpStatus.FORBIDDEN.value());
+        mav.addObject("errorMsg", HttpStatus.FORBIDDEN.getReasonPhrase());
         return mav;
     }
 }

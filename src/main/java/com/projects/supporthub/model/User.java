@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "users")
@@ -44,6 +45,9 @@ public class User implements Serializable
 
     @Column(name = "title", nullable = false)
     private String title;
+
+    @Transient
+    private boolean firstLogin = true;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -94,9 +98,9 @@ public class User implements Serializable
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) 
+    public boolean getFirstLogin()
     {
-        this.roles = roles;
+        return firstLogin;
     }
 
     public void setUserId(String userId) 
@@ -137,5 +141,34 @@ public class User implements Serializable
     public void setTitle(String title) 
     {
         this.title = title;
+    }
+
+    public void setFirstLogin(boolean firstLogin) 
+    {
+        if (isModifiable())
+        {
+            this.firstLogin = firstLogin;
+        }
+        else
+        {
+            throw new IllegalStateException("User has already logged in at least once.");
+        }
+    }
+
+    public void setRoles(Set<Role> roles) 
+    {
+        this.roles = roles;
+    }
+
+    private boolean isModifiable()
+    {
+        if (firstLogin == true)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
