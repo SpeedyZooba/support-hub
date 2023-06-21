@@ -118,23 +118,23 @@ public class TicketController
 
     private Page<Ticket> findPaginatedForUserId(int page, String userId)
     {
-        log.debug("Inside helper method findPaginatedForUserId.");
+        log.info("Inside helper method findPaginatedForUserId.");
         int pageSize = 10;
         Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("createdAt").ascending());
-        log.debug("Helper about to terminate.");
+        log.info("Helper about to terminate.");
         return tickets.getTicketByUserId(userId, pages);
     }
 
     private String addPagination(int page, Model model, Page<Ticket> pagination) 
     {
-        log.debug("Inside helper method addPagination.");
+        log.info("Inside helper method addPagination.");
         model.addAttribute("ticketPage", pagination);
         List<Ticket> tickets = pagination.getContent();
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages",pagination.getTotalPages());
         model.addAttribute("totalItems", pagination.getNumberOfElements());
         model.addAttribute("ticketList", tickets);
-        log.debug("Helper about to terminate.");
+        log.info("Helper about to terminate.");
         return "/tickets/all";
     }
 }

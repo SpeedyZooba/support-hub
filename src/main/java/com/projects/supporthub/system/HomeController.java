@@ -3,6 +3,7 @@ package com.projects.supporthub.system;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -22,6 +23,12 @@ public class HomeController
     {
         this.users = users;
         this.verifier = verifier;
+    }
+
+    @GetMapping("/login")
+    public String loginPage()
+    {
+        return "login";
     }
 
     @PostMapping("/login")
@@ -47,7 +54,7 @@ public class HomeController
         else
         {
             log.info("Authentication fail.");
-            redirectAttributes.addFlashAttribute("failureMessage", "Invalid username or password.");
+            redirectAttributes.addFlashAttribute("failure", "Invalid username or password.");
             return "redirect:/login";
         }
     }

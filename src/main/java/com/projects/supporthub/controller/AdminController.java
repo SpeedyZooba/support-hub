@@ -180,7 +180,7 @@ public class AdminController
         // add the message to display when there are no records of any users
         if (usersFound.isEmpty())
         {
-            log.debug("Inside the isEmpty() check conditional block.");
+            log.info("Inside the isEmpty() check conditional block.");
             model.addAttribute("empty", "No users found.");
         }
         log.info("displayAllUsers is about to finish execution.");
@@ -235,67 +235,67 @@ public class AdminController
 
     private Page<Notice> findAllNoticesPaginated(int page) 
     {
-        log.debug("Inside helper mehtod findAllNoticesPaginated.");
+        log.info("Inside helper mehtod findAllNoticesPaginated.");
         int pageSize = 10;
         Pageable pages = PageRequest.of(page, pageSize, Sort.by("noticeDate").ascending());
-        log.debug("Helper about to terminate.");
+        log.info("Helper about to terminate.");
         return notices.getAllNotices(pages);
     }
 
     private String addNoticePagination(int page, Model model, Page<Notice> pagination) 
     {
-        log.debug("Inside helper method addNoticePagination.");
+        log.info("Inside helper method addNoticePagination.");
         model.addAttribute("noticePage", pagination);
         List<Notice> notices = pagination.getContent();
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", pagination.getTotalPages());
         model.addAttribute("totalItems", pagination.getNumberOfElements());
         model.addAttribute("noticeList", notices);
-        log.debug("Helper about to terminate.");
+        log.info("Helper about to terminate.");
         return "/notices/all";
     }
 
     private Page<Ticket> findAllTicketsPaginated(int page) 
     {
-        log.debug("Inside helper method findAllTicketsPaginated.");
+        log.info("Inside helper method findAllTicketsPaginated.");
         int pageSize = 10;
         Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("createdAt").ascending());
-        log.debug("Helper about to terminate.");
+        log.info("Helper about to terminate.");
         return tickets.getAllTickets(pages);
     }
 
     private String addTicketPagination(int page, Model model, Page<Ticket> pagination) 
     {
-        log.debug("Inside helper method addTicketPagination.");
+        log.info("Inside helper method addTicketPagination.");
         model.addAttribute("ticketPages", pagination);
         List<Ticket> tickets = pagination.getContent();
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", pagination.getTotalPages());
         model.addAttribute("totalItems", pagination.getNumberOfElements());
         model.addAttribute("ticketList", tickets);
-        log.debug("Helper about to terminate.");
+        log.info("Helper about to terminate.");
         return "/tickets/all";
     }
 
     private Page<User> findAllUsersPaginated(int page) 
     {
-        log.debug("Inside helper method findAllUsersPaginated.");
+        log.info("Inside helper method findAllUsersPaginated.");
         int pageSize = 10;
         Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("lastName").ascending());
-        log.debug("Helper about to terminate.");
+        log.info("Helper about to terminate.");
         return users.getAllUsers(pages);
     }
 
     private String addUserPagination(int page, Model model, Page<User> pagination) 
     {
-        log.debug("Inside helper method addUserPagination.");
+        log.info("Inside helper method addUserPagination.");
         model.addAttribute("userPages", pagination);
         List<User> users = pagination.getContent();
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", pagination.getTotalPages());
         model.addAttribute("totalItems", pagination.getNumberOfElements());
         model.addAttribute("userList", users);
-        log.debug("Helper about to terminate.");
+        log.info("Helper about to terminate.");
         return "/users/all";
     }
 }

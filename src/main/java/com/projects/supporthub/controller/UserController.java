@@ -27,7 +27,7 @@ import com.projects.supporthub.service.UserService;
 @Controller
 @EnableMethodSecurity
 @RequestMapping("/{userId}")
-@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN') and #userId == @verifier.userIdVerification(#userId)")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN') and #userId == @verifier.userIdVerification(#userId)")
 public class UserController 
 {
     private final SecurityService verifier;

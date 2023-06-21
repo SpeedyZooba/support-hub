@@ -70,23 +70,23 @@ public class NoticeController
 
     private Page<Notice> findNoticesPaginated(int page) 
     {
-        log.debug("Inside helper method findNoticesPaginated.");
+        log.info("Inside helper method findNoticesPaginated.");
         int pageSize = 10;
         Pageable pages = PageRequest.of(page, pageSize, Sort.by("noticeDate").ascending());
-        log.debug("Helper about to terminate.");
+        log.info("Helper about to terminate.");
         return notices.getAllNotices(pages);
     }
 
     private String addPagination(int page, Model model, Page<Notice> pagination) 
     {
-        log.debug("Inside helper method addPagination.");
+        log.info("Inside helper method addPagination.");
         model.addAttribute("noticePage", pagination);
         List<Notice> notices = pagination.getContent();
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", pagination.getTotalPages());
         model.addAttribute("totalItems", pagination.getNumberOfElements());
         model.addAttribute("noticeList", notices);
-        log.debug("Helper about to terminate.");
+        log.info("Helper about to terminate.");
         return "/notices/all";
     }
 }

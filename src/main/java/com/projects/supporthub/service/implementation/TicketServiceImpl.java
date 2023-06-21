@@ -8,12 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.projects.supporthub.exception.TicketNotFoundException;
 import com.projects.supporthub.model.Ticket;
 import com.projects.supporthub.repository.TicketRepository;
 import com.projects.supporthub.repository.UserRepository;
 import com.projects.supporthub.service.TicketService;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class TicketServiceImpl implements TicketService
@@ -30,63 +29,63 @@ public class TicketServiceImpl implements TicketService
 
     public void newTicket(Ticket ticket)
     {
-        log.debug("Inside service method newTicket.");
-        log.debug("Service method newTicket calls repo method save.");
+        log.info("Inside service method newTicket.");
+        log.info("Service method newTicket calls repo method save.");
         ticketRepo.save(ticket);
     }
 
     public void deleteTicketById(UUID id)
     {
-        log.debug("Inside service method deleteTicketById.");
-        log.debug("Service method deleteTicketById is about to call repo method findById.");
+        log.info("Inside service method deleteTicketById.");
+        log.info("Service method deleteTicketById is about to call repo method findById.");
         if (!ticketRepo.findById(id).isPresent())
         {
             log.error("Received invalid ticketId.");
-            throw new EntityNotFoundException("The requested ticket was not found.");
+            throw new TicketNotFoundException("The requested ticket was not found.");
         }
         else
         {
-            log.debug("Service method deleteTicketById calls repo method deleteById.");
+            log.info("Service method deleteTicketById calls repo method deleteById.");
             ticketRepo.deleteById(id);
         }
     }
 
     public Ticket getTicketById(UUID id)
     {
-        log.debug("Inside service method getTicketById.");
-        log.debug("Service method getTicketById is about to call repo method findById.");
+        log.info("Inside service method getTicketById.");
+        log.info("Service method getTicketById is about to call repo method findById.");
         if (!ticketRepo.findById(id).isPresent())
         {
             log.error("Received invalid ticketId.");
-            throw new EntityNotFoundException("The requested ticket was not found.");
+            throw new TicketNotFoundException("The requested ticket was not found.");
         }
         else
         {
-            log.debug("Service method getTicketById calls repo method findById for return.");
+            log.info("Service method getTicketById calls repo method findById for return.");
             return ticketRepo.findById(id).get();
         }
     }
 
     public Page<Ticket> getTicketByUserId(String id, Pageable pageable)
     {
-        log.debug("Inside service method getTicketByUserId.");
-        log.debug("Service method getTicketByUserId is about to call repo method findById.");
+        log.info("Inside service method getTicketByUserId.");
+        log.info("Service method getTicketByUserId is about to call repo method findById.");
         if (!userRepo.findById(id).isPresent())
         {
             log.error("Received invalid userId.");
-            throw new EntityNotFoundException("No user found for ticket display.");
+            throw new TicketNotFoundException("No user found for ticket display.");
         }
         else
         {
-            log.debug("Service method getTicketByUserId calls repo method findByCreatorId for return.");
+            log.info("Service method getTicketByUserId calls repo method findByCreatorId for return.");
             return ticketRepo.findByCreatorId(id, pageable);
         }
     }
 
     public Page<Ticket> getAllTickets(Pageable pageable)
     {
-        log.debug("Inside service method getAllTickets.");
-        log.debug("Service method getAllTickets calls repo method findAll for return.");
+        log.info("Inside service method getAllTickets.");
+        log.info("Service method getAllTickets calls repo method findAll for return.");
         return ticketRepo.findAll(pageable);
     }
 }

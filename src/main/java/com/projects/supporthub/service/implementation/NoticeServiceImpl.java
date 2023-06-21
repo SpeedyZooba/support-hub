@@ -7,11 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.projects.supporthub.exception.NoticeNotFoundException;
 import com.projects.supporthub.model.Notice;
 import com.projects.supporthub.repository.NoticeRepository;
 import com.projects.supporthub.service.NoticeService;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class NoticeServiceImpl implements NoticeService
@@ -27,47 +26,47 @@ public class NoticeServiceImpl implements NoticeService
 
     public void newNotice(Notice notice)
     {
-        log.debug("Inside service method newNotice.");
-        log.debug("Service method newNotice calls repo method save.");
+        log.info("Inside service method newNotice.");
+        log.info("Service method newNotice calls repo method save.");
         noticeRepo.save(notice);
     }
 
     public void deleteNoticeById(int id)
     {
-        log.debug("Inside service method deleteNoticeById.");
-        log.debug("Service method deleteNoticeById is about to call repo method findById.");
+        log.info("Inside service method deleteNoticeById.");
+        log.info("Service method deleteNoticeById is about to call repo method findById.");
         if (!noticeRepo.findById(id).isPresent())
         {
             log.error("Recevied invalid noticeId.");
-            throw new EntityNotFoundException("Notice not found.");
+            throw new NoticeNotFoundException("Notice not found.");
         }
         else
         {
-            log.debug("Service method deleteNoticeById calls repo method deleteById.");
+            log.info("Service method deleteNoticeById calls repo method deleteById.");
             noticeRepo.deleteById(id);
         }
     }
 
     public Notice getNoticeById(int id)
     {
-        log.debug("Inside service method getNoticeById.");
-        log.debug("Service method getNoticeById is about to call repo method findById.");
+        log.info("Inside service method getNoticeById.");
+        log.info("Service method getNoticeById is about to call repo method findById.");
         if (!noticeRepo.findById(id).isPresent())
         {
             log.error("Received invalid noticeId.");
-            throw new EntityNotFoundException("Notice not found.");
+            throw new NoticeNotFoundException("Notice not found.");
         }
         else
         {
-            log.debug("Service method getNoticeById calls repo method findById for return.");
+            log.info("Service method getNoticeById calls repo method findById for return.");
             return noticeRepo.findById(id).get();
         }
     }
 
     public Page<Notice> getAllNotices(Pageable pageable)
     {
-        log.debug("Inside service method getAllNotices.");
-        log.debug("Service method getAllNotices calls repo method findAll for return.");
+        log.info("Inside service method getAllNotices.");
+        log.info("Service method getAllNotices calls repo method findAll for return.");
         return noticeRepo.findAll(pageable);
     }
 
@@ -77,7 +76,7 @@ public class NoticeServiceImpl implements NoticeService
     @Scheduled(cron = "0 0 9 * * *")
     public void purge()
     {
-        log.debug("Service method purge calls repo method deleteByAMonth.");
+        log.info("Service method purge calls repo method deleteByAMonth.");
         noticeRepo.deleteByAMonth();
     }
 }

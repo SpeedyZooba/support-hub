@@ -6,12 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.projects.supporthub.exception.UserNotFoundException;
 import com.projects.supporthub.model.User;
 import com.projects.supporthub.repository.TicketRepository;
 import com.projects.supporthub.repository.UserRepository;
 import com.projects.supporthub.service.UserService;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class UserServiceImpl implements UserService
@@ -41,7 +40,7 @@ public class UserServiceImpl implements UserService
         if (!userRepo.findById(id).isPresent())
         {
             log.error("Received invalid userId.");
-            throw new EntityNotFoundException("The requested user was not found.");
+            throw new UserNotFoundException("The requested user was not found.");
         }
         else
         {
@@ -59,7 +58,7 @@ public class UserServiceImpl implements UserService
         if (!userRepo.findById(id).isPresent())
         {
             log.debug("Received invalid userId.");
-            throw new EntityNotFoundException("The requested user not found.");
+            throw new UserNotFoundException("The requested user not found.");
         }
         else
         {
@@ -75,7 +74,7 @@ public class UserServiceImpl implements UserService
         if (!userRepo.findByEmail(username).isPresent())
         {
             log.debug("Received invalid email.");
-            throw new EntityNotFoundException("The requested user was not found.");
+            throw new UserNotFoundException("The requested user was not found.");
         }
         else
         {

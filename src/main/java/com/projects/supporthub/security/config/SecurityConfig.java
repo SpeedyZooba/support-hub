@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,23 +20,38 @@ public class SecurityConfig
     @Autowired
     private UserDetailsService details;
 
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
     {
         http.
             authorizeHttpRequests((authz) -> authz
-                .requestMatchers("/adminpanel/**").hasRole("ROLE_ADMIN").anyRequest().authenticated()
-                .requestMatchers("/notices").hasAnyRole("ROLE_USER, ROLE_ADMIN").anyRequest().authenticated()
+                .requestMatchers("/styles/**").permitAll()
+                .requestMatchers("/resources/**").permitAll()
+                .requestMatchers("/adminpanel/**").hasRole("ADMIN")
+                .requestMatchers("/notices").hasAnyRole("USER, ADMIN")
                 .requestMatchers("/login").anonymous().anyRequest().authenticated()
-                );
-        http.formLogin((formLogin) -> formLogin
-                .loginPage("/login.html")
+                )
+            .formLogin((formLogin) -> formLogin
+                .loginPage("/login")
                 .permitAll()
-                .defaultSuccessUrl("/home.html")
-                .failureUrl("/login.html?error=true")
+                .usernameParameter("email")
+                .defaultSuccessUrl("/home")
+                .failureUrl("/login?error")
+                )
+            .rememberMe((rember) -> rember
+                .disable()
+                )
+            .sessionManagement((session) -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionConcurrency((concurrency) -> concurrency
+                    .maximumSessions(1)
+                    .expiredUrl("/login?expired")
+                    .maxSessionsPreventsLogin(true)
+                    )
                 )
             .logout((formLogout) -> formLogout
-                .logoutUrl("logout.html")
-                .logoutSuccessUrl("/login.html")
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID"));
         return http.build();
