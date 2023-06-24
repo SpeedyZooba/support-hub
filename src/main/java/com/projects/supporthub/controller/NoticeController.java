@@ -26,7 +26,7 @@ import com.projects.supporthub.service.NoticeService;
 @RequestMapping("/notices")
 public class NoticeController 
 {
-    private final NoticeService notices;
+    private NoticeService notices;
 
     private static final Logger log = LoggerFactory.getLogger(NoticeController.class);
 

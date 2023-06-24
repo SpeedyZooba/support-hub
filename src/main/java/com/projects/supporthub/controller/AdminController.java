@@ -38,9 +38,9 @@ import com.projects.supporthub.service.UserService;
 @RequestMapping("/adminpanel")
 public class AdminController 
 {
-    private final UserService users;
-    private final TicketService tickets;
-    private final NoticeService notices;
+    private UserService users;
+    private TicketService tickets;
+    private NoticeService notices;
 
     private static final String ERROR_REDIRECTION = "redirect:/error";
     private static final String[] BLACKLIST = {"ticketId", "noticeId", "userId", "email", "passwordHash"};

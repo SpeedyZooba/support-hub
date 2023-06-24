@@ -1,5 +1,6 @@
 package com.projects.supporthub.service.implementation;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -17,13 +18,14 @@ import com.projects.supporthub.service.TicketService;
 @Service
 public class TicketServiceImpl implements TicketService
 {
-    private UserRepository userRepo;
-    private TicketRepository ticketRepo;
+    private final UserRepository userRepo;
+    private final TicketRepository ticketRepo;
 
     private static final Logger log = LoggerFactory.getLogger(TicketServiceImpl.class);
 
-    public TicketServiceImpl(TicketRepository ticketRepo)
+    public TicketServiceImpl(UserRepository userRepo, TicketRepository ticketRepo)
     {
+        this.userRepo = userRepo;
         this.ticketRepo = ticketRepo;
     }
 
@@ -53,16 +55,16 @@ public class TicketServiceImpl implements TicketService
     public Ticket getTicketById(UUID id)
     {
         log.info("Inside service method getTicketById.");
-        log.info("Service method getTicketById is about to call repo method findById.");
-        if (!ticketRepo.findById(id).isPresent())
+        Optional<Ticket> ticket = ticketRepo.findById(id);
+        if (!ticket.isPresent())
         {
             log.error("Received invalid ticketId.");
             throw new TicketNotFoundException("The requested ticket was not found.");
         }
         else
         {
-            log.info("Service method getTicketById calls repo method findById for return.");
-            return ticketRepo.findById(id).get();
+            log.info("Returning Ticket from the container.");
+            return ticket.get();
         }
     }
 

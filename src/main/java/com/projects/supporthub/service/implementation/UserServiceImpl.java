@@ -1,5 +1,7 @@
 package com.projects.supporthub.service.implementation;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -54,32 +56,32 @@ public class UserServiceImpl implements UserService
     public User getUserById(String id)
     {
         log.debug("Inside service method getUserById.");
-        log.debug("Service method getUserById is about to call repo method findById.");
-        if (!userRepo.findById(id).isPresent())
+        Optional<User> user = userRepo.findById(id);
+        if (!user.isPresent())
         {
             log.debug("Received invalid userId.");
             throw new UserNotFoundException("The requested user not found.");
         }
         else
         {
-            log.debug("Service method getUserById calls repo method findById for return.");
-            return userRepo.findById(id).get();
+            log.debug("Returning User from the container.");
+            return user.get();
         }
     }
-
+    
     public User getUserByUsername(String username)
     {
         log.debug("Inside service method getUserByUsername");
-        log.debug("Service method getUserByUsername is about to call repo method findByEmail");
-        if (!userRepo.findByEmail(username).isPresent())
+        Optional<User> user = userRepo.findByEmail(username);
+        if (!user.isPresent())
         {
             log.debug("Received invalid email.");
             throw new UserNotFoundException("The requested user was not found.");
         }
         else
         {
-            log.debug("Service method getUserByUsername calls repo method findByEmail for return.");
-            return userRepo.findByEmail(username).get();
+            log.debug("Returning user from the container.");
+            return user.get();
         }
     }
 

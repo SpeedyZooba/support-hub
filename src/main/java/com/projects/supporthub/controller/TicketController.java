@@ -27,17 +27,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.projects.supporthub.model.Ticket;
+import com.projects.supporthub.model.User;
 import com.projects.supporthub.service.SecurityService;
 import com.projects.supporthub.service.TicketService;
 
 @Controller
 @EnableMethodSecurity
-@RequestMapping("/{userId}/tickets")
-@PreAuthorize("@verifier.userIdVerification(#userId)")
+@RequestMapping("/tickets")
 public class TicketController
 {
-    private final SecurityService verifier;
-    private final TicketService tickets;
+    private SecurityService verifier;
+    private TicketService tickets;
 
     private static final String ERROR_REDIRECTION = "redirect:/error";
     private static final Logger log = LoggerFactory.getLogger(TicketController.class);
@@ -55,10 +55,12 @@ public class TicketController
     }
     
     @GetMapping
-    public String displayTicketsByUser(@RequestParam(defaultValue = "1") int page, @PathVariable("userId") String userId, BindingResult result, Model model)
+    public String displayTicketsByUser(@RequestParam(defaultValue = "1") int page, BindingResult result, Model model)
     {
         log.info("displayTicketsByUser has begun execution.");
-        Page<Ticket> ticketsFound = findPaginatedForUserId(page, userId);
+        log.info("Retrieving the User of this session.");
+        User currentUser = verifier.sessionOwnerRetrieval();
+        Page<Ticket> ticketsFound = findPaginatedForUserId(page, currentUser.getUserId());
         // add the message to display when there are no tickets issued by the specified user
         if (ticketsFound.isEmpty())
         {

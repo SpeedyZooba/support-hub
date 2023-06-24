@@ -149,10 +149,6 @@ public class User implements Serializable
         {
             this.firstLogin = firstLogin;
         }
-        else
-        {
-            throw new IllegalStateException("User has already logged in at least once.");
-        }
     }
 
     public void setRoles(Set<Role> roles) 

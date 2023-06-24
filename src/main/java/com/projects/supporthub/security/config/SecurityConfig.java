@@ -13,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.projects.supporthub.security.LoginSuccessHandler;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig
@@ -27,16 +29,17 @@ public class SecurityConfig
             authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/styles/**").permitAll()
                 .requestMatchers("/resources/**").permitAll()
-                .requestMatchers("/adminpanel/**").hasRole("ADMIN")
+                .requestMatchers("/home").hasAnyRole("USER, ADMIN")
                 .requestMatchers("/notices").hasAnyRole("USER, ADMIN")
-                .requestMatchers("/login").anonymous().anyRequest().authenticated()
+                .requestMatchers("/adminpanel/**").hasRole("ADMIN")
+                .requestMatchers("/login*").anonymous().anyRequest().authenticated()
                 )
             .formLogin((formLogin) -> formLogin
                 .loginPage("/login")
-                .permitAll()
-                .usernameParameter("email")
-                .defaultSuccessUrl("/home")
+                .loginProcessingUrl("/login")
+                .successHandler(successHandler())
                 .failureUrl("/login?error")
+                .permitAll()
                 )
             .rememberMe((rember) -> rember
                 .disable()
@@ -69,5 +72,11 @@ public class SecurityConfig
     public PasswordEncoder encoder()
     {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public LoginSuccessHandler successHandler()
+    {
+        return new LoginSuccessHandler();
     }
 }

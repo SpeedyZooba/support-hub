@@ -15,7 +15,7 @@ import com.projects.supporthub.repository.UserRepository;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService
 {
-    private UserRepository userRepo;
+    private final UserRepository userRepo;
 
     private static final Logger log = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 

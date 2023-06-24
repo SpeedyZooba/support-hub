@@ -1,5 +1,7 @@
 package com.projects.supporthub.service.implementation;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -15,7 +17,7 @@ import com.projects.supporthub.service.NoticeService;
 @Service
 public class NoticeServiceImpl implements NoticeService
 {
-    private NoticeRepository noticeRepo;
+    private final NoticeRepository noticeRepo;
 
     private static final Logger log = LoggerFactory.getLogger(NoticeServiceImpl.class);
 
@@ -50,16 +52,16 @@ public class NoticeServiceImpl implements NoticeService
     public Notice getNoticeById(int id)
     {
         log.info("Inside service method getNoticeById.");
-        log.info("Service method getNoticeById is about to call repo method findById.");
-        if (!noticeRepo.findById(id).isPresent())
+        Optional<Notice> notice = noticeRepo.findById(id);
+        if (!notice.isPresent())
         {
             log.error("Received invalid noticeId.");
             throw new NoticeNotFoundException("Notice not found.");
         }
         else
         {
-            log.info("Service method getNoticeById calls repo method findById for return.");
-            return noticeRepo.findById(id).get();
+            log.info("Returning Notice from the container.");
+            return notice.get();
         }
     }
 

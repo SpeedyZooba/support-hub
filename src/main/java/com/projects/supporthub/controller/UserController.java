@@ -14,7 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,12 +25,12 @@ import com.projects.supporthub.service.UserService;
 
 @Controller
 @EnableMethodSecurity
-@RequestMapping("/{userId}")
-@PreAuthorize("hasAnyRole('USER', 'ADMIN') and #userId == @verifier.userIdVerification(#userId)")
+@RequestMapping("/profile")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class UserController 
 {
-    private final SecurityService verifier;
-    private final UserService users;
+    private SecurityService verifier;
+    private UserService users;
 
     private static final String ERROR_REDIRECTION = "redirect:/error";
     private static final String[] BLACKLIST = {"userId", "email", "passwordHash"};
@@ -50,29 +49,31 @@ public class UserController
         dataBinder.setDisallowedFields(BLACKLIST);
     }
 
-    @GetMapping("/profile")
-    public ModelAndView displayUserDetails(@PathVariable("userId") String userId)
+    @GetMapping
+    public ModelAndView displayUserDetails()
     {
         log.info("displayUserDetails has begun execution.");
+        log.info("Retrieving the User of this session.");
+        User currentUser = verifier.sessionOwnerRetrieval();
         ModelAndView mav = new ModelAndView("details");
-        User userFound = users.getUserById(userId);
-        mav.addObject("user", userFound);
+        mav.addObject("user", currentUser);
         log.info("displayUserDetails is about to finish execution.");
         return mav;
     }
 
     @GetMapping("/edit")
-    public String initUpdateForm(@PathVariable("userId") String userId, Model model)
+    public String initUpdateForm(Model model)
     {
         log.info("initUpdateForm has begun execution.");
-        User userFound = users.getUserById(userId);
-        model.addAttribute("userToEdit", userFound);
+        log.info("Retrieving the User of this session.");
+        User currentUser = verifier.sessionOwnerRetrieval();
+        model.addAttribute("userToEdit", currentUser);
         log.info("initUpdateForm is about to finish execution.");
         return "updateuserform";
     }
 
     @PostMapping("/edit")
-    public String processUpdateForm(@Valid User user, BindingResult result, @PathVariable("userId") String userId)
+    public String processUpdateForm(@Valid User user, BindingResult result, String userId)
     {
         log.info("processUpdateForm has begun execution.");
         if (result.hasErrors())
@@ -83,21 +84,22 @@ public class UserController
         user.setPassword(encryptor.encode(user.getPassword()));
         users.newUser(user);
         log.info("processUpdateForm is about to finish execution.");
-        return "redirect:/{userId}/profile";
+        return "redirect:/profile";
     }
 
     @GetMapping("/setpassword")
-    public String initPasswordForm(@PathVariable("userId") String userId, Model model)
+    public String initPasswordForm(Model model)
     {
         log.info("initPasswordForm has begun execution.");
-        User userFound = users.getUserById(userId);
-        model.addAttribute("firstUser", userFound);
+        log.info("Retrieving the User of this session.");
+        User currentUser = verifier.sessionOwnerRetrieval();
+        model.addAttribute("firstUser", currentUser);
         log.info("initPasswordForm is about to finish execution.");
         return "firstpasswordform";
     }
 
     @PostMapping("/setpassword")
-    public String processPasswordForm(@Valid User user, BindingResult result, @RequestParam("password") String password, @PathVariable("userId") String userId)
+    public String processPasswordForm(@Valid User user, BindingResult result, @RequestParam("password") String password)
     {
         log.info("processPasswordForm has begun execution.");
         if (result.hasErrors())
@@ -108,6 +110,6 @@ public class UserController
         user.setPassword(encryptor.encode(user.getPassword()));
         users.newUser(user);
         log.info("processPasswordForm is about to finish execution.");
-        return "redirect:/{userId}";
+        return "redirect:/profile";
     }
 }
