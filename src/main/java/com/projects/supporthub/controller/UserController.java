@@ -81,7 +81,6 @@ public class UserController
             log.error("A binding error has occurred.");
             return ERROR_REDIRECTION;
         }
-        user.setPassword(encryptor.encode(user.getPassword()));
         users.newUser(user);
         log.info("processUpdateForm is about to finish execution.");
         return "redirect:/profile";
@@ -95,7 +94,7 @@ public class UserController
         User currentUser = verifier.sessionOwnerRetrieval();
         model.addAttribute("firstUser", currentUser);
         log.info("initPasswordForm is about to finish execution.");
-        return "firstpasswordform";
+        return "passwordform";
     }
 
     @PostMapping("/setpassword")
@@ -107,7 +106,7 @@ public class UserController
             log.error("A binding error has occurred.");
             return ERROR_REDIRECTION;
         }
-        user.setPassword(encryptor.encode(user.getPassword()));
+        user.setPassword(encryptor.encode(password));
         users.newUser(user);
         log.info("processPasswordForm is about to finish execution.");
         return "redirect:/profile";
