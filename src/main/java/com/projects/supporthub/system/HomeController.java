@@ -15,4 +15,10 @@ public class HomeController
         log.info("Login page initiated.");
         return "login";
     }
+
+    @GetMapping("/home")
+    public String homepage()
+    {
+        return "home";
+    }
 }

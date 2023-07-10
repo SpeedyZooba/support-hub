@@ -28,6 +28,7 @@ public class SecurityConfig
         http.
             authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/styles/**").permitAll()
+                .requestMatchers("/images/**").permitAll()
                 .requestMatchers("/resources/**").permitAll()
                 .requestMatchers("/home").hasAnyRole("USER, ADMIN")
                 .requestMatchers("/notices").hasAnyRole("USER, ADMIN")

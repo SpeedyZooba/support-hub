@@ -61,7 +61,7 @@ public class NoticeController
     public ModelAndView displayNoticeById(@PathVariable("noticeId") int noticeId)
     {
         log.info("displayNoticeById has begun execution.");
-        ModelAndView mav = new ModelAndView("noticeinfo");
+        ModelAndView mav = new ModelAndView("notice");
         Notice noticeFound = notices.getNoticeById(noticeId);
         mav.addObject("notice", noticeFound);
         log.info("displayNoticeById is about to finish execution.");
@@ -87,6 +87,6 @@ public class NoticeController
         model.addAttribute("totalItems", pagination.getNumberOfElements());
         model.addAttribute("noticeList", notices);
         log.info("Helper about to terminate.");
-        return "/notices/all";
+        return "/notices";
     }
 }

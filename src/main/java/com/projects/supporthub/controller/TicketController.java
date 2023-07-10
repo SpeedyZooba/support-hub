@@ -28,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.projects.supporthub.model.Ticket;
 import com.projects.supporthub.model.User;
+import com.projects.supporthub.model.Ticket.Status;
 import com.projects.supporthub.service.SecurityService;
 import com.projects.supporthub.service.TicketService;
 
@@ -79,6 +80,8 @@ public class TicketController
         log.info("displayTicketById has begun execution.");
         ModelAndView mav = new ModelAndView("ticketinfo");
         Ticket ticketFound = tickets.getTicketById(ticketId);
+        String name = verifier.sessionOwnerRetrieval().getFirstName() + verifier.sessionOwnerRetrieval().getLastName();
+        mav.addObject("name", name);
         mav.addObject("ticket", ticketFound);
         log.info("displayTicketById is about to finish execution.");
         return mav;
@@ -91,7 +94,7 @@ public class TicketController
         Ticket ticket = new Ticket();
         model.addAttribute("newTicket", ticket);
         log.info("initTicketForm is about to finish execution.");
-        return "newticketform";
+        return "ticketform";
     }
 
     @PostMapping("/new")
@@ -103,12 +106,13 @@ public class TicketController
             log.error("A binding error has occurred.");
             return ERROR_REDIRECTION;
         }
+        ticket.setStatus(Status.PENDING);
         tickets.newTicket(ticket);
         log.info("processTicketForm is about to finish execution.");
-        return "redirect:/{userId}/tickets";
+        return "redirect:/tickets";
     }
 
-    @DeleteMapping("/delete/{ticketId}")
+    @DeleteMapping("/{ticketId}/delete")
     @PreAuthorize("@verifier.ticketIdVerification(#ticketId)")
     public String deleteTicket(@PathVariable("ticketId") UUID ticketId, @PathVariable("userId") String userId)
     {
@@ -137,6 +141,6 @@ public class TicketController
         model.addAttribute("totalItems", pagination.getNumberOfElements());
         model.addAttribute("ticketList", tickets);
         log.info("Helper about to terminate.");
-        return "/tickets/all";
+        return "/tickets";
     }
 }

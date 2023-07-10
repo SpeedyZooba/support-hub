@@ -44,7 +44,7 @@ public class SecurityServiceImpl implements SecurityService
     {
         log.info("Inside service method ticketIdVerification.");
         log.info("Populating UserDetails.");
-        UserDetails detailsToLoad = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails detailsToLoad = (UserDetails) SecurityContextHolder.getContext().getAuthentication();
         log.info("Detail population success.");
         String username = detailsToLoad.getUsername();
         log.info("Returning user id check result.");

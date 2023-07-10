@@ -2,7 +2,7 @@ package com.projects.supporthub.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,7 +51,7 @@ public class User implements Serializable
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    private List<Role> roles;
 
     public String getUserId() 
     {
@@ -93,7 +93,7 @@ public class User implements Serializable
         return title;
     }
     
-    public Set<Role> getRoles() 
+    public List<Role> getRoles() 
     {
         return roles;
     }
@@ -151,7 +151,7 @@ public class User implements Serializable
         }
     }
 
-    public void setRoles(Set<Role> roles) 
+    public void setRoles(List<Role> roles) 
     {
         this.roles = roles;
     }

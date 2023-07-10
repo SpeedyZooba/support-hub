@@ -55,7 +55,7 @@ public class UserController
         log.info("displayUserDetails has begun execution.");
         log.info("Retrieving the User of this session.");
         User currentUser = verifier.sessionOwnerRetrieval();
-        ModelAndView mav = new ModelAndView("details");
+        ModelAndView mav = new ModelAndView("profile");
         mav.addObject("user", currentUser);
         log.info("displayUserDetails is about to finish execution.");
         return mav;
@@ -69,7 +69,7 @@ public class UserController
         User currentUser = verifier.sessionOwnerRetrieval();
         model.addAttribute("userToEdit", currentUser);
         log.info("initUpdateForm is about to finish execution.");
-        return "updateuserform";
+        return "profileform";
     }
 
     @PostMapping("/edit")

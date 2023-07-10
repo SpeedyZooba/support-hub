@@ -94,7 +94,7 @@ public class AdminController
         Notice notice = new Notice();
         model.addAttribute("newNotice", notice);
         log.info("initNoticeForm is about to finish execution.");
-        return "newnoticeform";
+        return "noticeform";
     }
 
     @PostMapping("/notices/new")
@@ -108,6 +108,15 @@ public class AdminController
         }
         notices.newNotice(notice);
         log.info("processNoticeForm is about to finish execution.");
+        return "redirect:/notices";
+    }
+
+    @DeleteMapping("/notices/{noticeId}/delete")
+    public String deleteNotice(@PathVariable("noticeId") int noticeId)
+    {
+        log.info("deleteNotice has begun execution.");
+        notices.deleteNoticeById(noticeId);
+        log.info("deleteTicket is about to finish execution.");
         return "redirect:/notices";
     }
 
@@ -139,7 +148,7 @@ public class AdminController
     }
 
     @GetMapping("/tickets/{ticketId}/update")
-    public String initUpdateForm(@PathVariable("ticketId") UUID ticketId, Model model)
+    public String initTicketUpdateForm(@PathVariable("ticketId") UUID ticketId, Model model)
     {
         log.info("initUpdateForm has begun execution.");
         Ticket ticket = tickets.getTicketById(ticketId);
@@ -149,7 +158,7 @@ public class AdminController
     }
 
     @PostMapping("/tickets/{tickedId}/update")
-    public String processUpdateForm(@Valid Ticket ticket, BindingResult result)
+    public String processTicketUpdateForm(@Valid Ticket ticket, BindingResult result)
     {
         log.info("processUpdateForm has begun execution.");
         if (result.hasErrors())
@@ -160,7 +169,7 @@ public class AdminController
         ticket.setStatus(Status.ANSWERED);
         tickets.newTicket(ticket);
         log.info("processUpdateForm is about to finish execution.");
-        return "return:/tickets";
+        return "redirect:/tickets";
     }
 
     @DeleteMapping("/tickets/{ticketId}/delete")
@@ -169,7 +178,7 @@ public class AdminController
         log.info("deleteTicket has begun execution.");
         tickets.deleteTicketById(ticketId);
         log.info("deleteTicket is about to finish execution.");
-        return "return:/tickets";
+        return "redirect:/tickets";
     }
 
     @GetMapping("/users")
@@ -192,7 +201,7 @@ public class AdminController
     public ModelAndView displayUserById(@PathVariable("userId") String userId)
     {
         log.info("displayUserById has begun execution.");
-        ModelAndView mav = new ModelAndView("userdetails");
+        ModelAndView mav = new ModelAndView("userinfo");
         User userFound = users.getUserById(userId);
         mav.addObject("user", userFound);
         log.info("displayUserById is about to finish execution.");
@@ -221,7 +230,31 @@ public class AdminController
         user.setPassword(encryptor.encode(user.getPassword()));
         users.newUser(user);
         log.info("processUserForm is about to finish execution.");
-        return new StringBuilder().append("redirect:/users/").append(user.getUserId()).toString();
+        return "redirect:/users/" + user.getUserId();
+    }
+
+    @GetMapping("/users/{userId}/delete")
+    public String initUserUpdateForm(@PathVariable("userId") String userId, Model model)
+    {
+        log.info("initUserUpdateForm has begun execution.");
+        User user = users.getUserById(userId);
+        model.addAttribute("user", user);
+        log.info("initUserUpdateForm is about to finish execution.");
+        return "updateuserform";
+    }
+
+    @PostMapping("/users/{userId}/delete")
+    public String processUserUpdateForm(@Valid User user, BindingResult result)
+    {
+        log.info("processUserUpdateForm has begun execution.");
+        if (result.hasErrors())
+        {
+            log.error("A binding error has occurred.");
+            return ERROR_REDIRECTION;
+        }
+        users.newUser(user);
+        log.info("processUserUpdateForm is about to finish execution.");
+        return "redirect:/users/" + user.getUserId();
     }
 
     @DeleteMapping("/users/{userId}/delete")
@@ -252,7 +285,7 @@ public class AdminController
         model.addAttribute("totalItems", pagination.getNumberOfElements());
         model.addAttribute("noticeList", notices);
         log.info("Helper about to terminate.");
-        return "/notices/all";
+        return "/notices";
     }
 
     private Page<Ticket> findAllTicketsPaginated(int page) 
@@ -267,14 +300,14 @@ public class AdminController
     private String addTicketPagination(int page, Model model, Page<Ticket> pagination) 
     {
         log.info("Inside helper method addTicketPagination.");
-        model.addAttribute("ticketPages", pagination);
+        model.addAttribute("ticketPage", pagination);
         List<Ticket> tickets = pagination.getContent();
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", pagination.getTotalPages());
         model.addAttribute("totalItems", pagination.getNumberOfElements());
         model.addAttribute("ticketList", tickets);
         log.info("Helper about to terminate.");
-        return "/tickets/all";
+        return "/tickets";
     }
 
     private Page<User> findAllUsersPaginated(int page) 
@@ -289,13 +322,13 @@ public class AdminController
     private String addUserPagination(int page, Model model, Page<User> pagination) 
     {
         log.info("Inside helper method addUserPagination.");
-        model.addAttribute("userPages", pagination);
+        model.addAttribute("userPage", pagination);
         List<User> users = pagination.getContent();
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", pagination.getTotalPages());
         model.addAttribute("totalItems", pagination.getNumberOfElements());
         model.addAttribute("userList", users);
         log.info("Helper about to terminate.");
-        return "/users/all";
+        return "/users";
     }
 }
