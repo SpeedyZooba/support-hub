@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS roles (
 );
 
 CREATE TABLE IF NOT EXISTS user_roles (
-    user_id         INT REFERENCES users(id_number),
+    user_id         VARCHAR(10) REFERENCES users(id_number),
     role_id         INT REFERENCES roles(id),
     PRIMARY KEY (user_id, role_id)  
 );

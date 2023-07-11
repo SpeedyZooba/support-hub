@@ -98,7 +98,7 @@ public class TicketController
     }
 
     @PostMapping("/new")
-    public String processTicketForm(@Valid Ticket ticket, BindingResult result, @PathVariable("userId") String userId)
+    public String processTicketForm(@Valid @RequestParam("newTicket") Ticket ticket, BindingResult result)
     {
         log.info("processTicketForm has begun execution.");
         if (result.hasErrors())

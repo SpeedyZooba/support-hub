@@ -73,7 +73,7 @@ public class UserController
     }
 
     @PostMapping("/edit")
-    public String processUpdateForm(@Valid User user, BindingResult result, String userId)
+    public String processUpdateForm(@Valid @RequestParam("userToEdit") User user, BindingResult result, String userId)
     {
         log.info("processUpdateForm has begun execution.");
         if (result.hasErrors())
@@ -98,7 +98,7 @@ public class UserController
     }
 
     @PostMapping("/setpassword")
-    public String processPasswordForm(@Valid User user, BindingResult result, @RequestParam("password") String password)
+    public String processPasswordForm(@Valid @RequestParam("firstUser") User user, BindingResult result, @RequestParam("password") String password)
     {
         log.info("processPasswordForm has begun execution.");
         if (result.hasErrors())

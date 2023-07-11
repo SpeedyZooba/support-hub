@@ -31,6 +31,7 @@ import com.projects.supporthub.model.Ticket;
 import com.projects.supporthub.model.User;
 import com.projects.supporthub.model.Ticket.Status;
 import com.projects.supporthub.service.NoticeService;
+import com.projects.supporthub.service.RoleService;
 import com.projects.supporthub.service.TicketService;
 import com.projects.supporthub.service.UserService;
 
@@ -39,6 +40,7 @@ import com.projects.supporthub.service.UserService;
 public class AdminController 
 {
     private UserService users;
+    private RoleService roles;
     private TicketService tickets;
     private NoticeService notices;
 
@@ -47,7 +49,7 @@ public class AdminController
     private static final PasswordEncoder encryptor = new BCryptPasswordEncoder();
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
 
-    public AdminController(UserService users, TicketService tickets, NoticeService notices)
+    public AdminController(UserService users, RoleService roles, TicketService tickets, NoticeService notices)
     {
         this.users = users;
         this.tickets = tickets;
@@ -98,7 +100,7 @@ public class AdminController
     }
 
     @PostMapping("/notices/new")
-    public String processNoticeForm(@Valid Notice notice, BindingResult result)
+    public String processNoticeForm(@Valid @RequestParam("newNotice") Notice notice, BindingResult result)
     {
         log.info("processNoticeForm has begun execution.");
         if (result.hasErrors())
@@ -108,6 +110,30 @@ public class AdminController
         }
         notices.newNotice(notice);
         log.info("processNoticeForm is about to finish execution.");
+        return "redirect:/notices";
+    }
+
+    @GetMapping("/notices/{noticeId}/update")
+    public String initDescriptionUpdateForm(@PathVariable("noticeId") int noticeId, Model model)
+    {
+        log.info("initDescriptionNoticeForm has begun execution");
+        Notice notice = notices.getNoticeById(noticeId);
+        model.addAttribute("notice", notice);
+        log.info("initDescriptionUpdateForm is about to finish execution.");
+        return "descriptionform";
+    }
+
+    @PostMapping("/notices/{noticeId}/update")
+    public String processDescriptionUpdateForm(@Valid @RequestParam("notice") Notice notice, BindingResult result)
+    {
+        log.info("processDescriptionUpdateForm is about to finish execution.");
+        if (result.hasErrors())
+        {
+            log.error("A binding error has occurred.");
+            return ERROR_REDIRECTION;
+        }
+        notices.newNotice(notice);
+        log.info("processDescriptionUpdateForm is about to finish execution.");
         return "redirect:/notices";
     }
 
@@ -158,7 +184,7 @@ public class AdminController
     }
 
     @PostMapping("/tickets/{tickedId}/update")
-    public String processTicketUpdateForm(@Valid Ticket ticket, BindingResult result)
+    public String processTicketUpdateForm(@Valid @RequestParam("response") Ticket ticket, BindingResult result)
     {
         log.info("processUpdateForm has begun execution.");
         if (result.hasErrors())
@@ -219,7 +245,7 @@ public class AdminController
     }
 
     @PostMapping("/users/new")
-    public String processUserForm(@Valid User user, BindingResult result)
+    public String processUserForm(@Valid @RequestParam("newUser") User user, @RequestParam("perm") boolean adminFlag, BindingResult result)
     {
         log.info("processUserForm has begun execution.");
         if (result.hasErrors())
@@ -227,13 +253,21 @@ public class AdminController
             log.error("A binding error has occurred.");
             return ERROR_REDIRECTION;
         }
+        if (adminFlag)
+        {
+            user.setRoles(roles.getRole("ROLE_ADMIN"));
+        }
+        else
+        {
+            user.setRoles(roles.getRole("ROLE_USER"));
+        }
         user.setPassword(encryptor.encode(user.getPassword()));
         users.newUser(user);
         log.info("processUserForm is about to finish execution.");
         return "redirect:/users/" + user.getUserId();
     }
 
-    @GetMapping("/users/{userId}/delete")
+    @GetMapping("/users/{userId}/update")
     public String initUserUpdateForm(@PathVariable("userId") String userId, Model model)
     {
         log.info("initUserUpdateForm has begun execution.");
@@ -243,8 +277,8 @@ public class AdminController
         return "updateuserform";
     }
 
-    @PostMapping("/users/{userId}/delete")
-    public String processUserUpdateForm(@Valid User user, BindingResult result)
+    @PostMapping("/users/{userId}/update")
+    public String processUserUpdateForm(@Valid @RequestParam("user") User user, BindingResult result)
     {
         log.info("processUserUpdateForm has begun execution.");
         if (result.hasErrors())

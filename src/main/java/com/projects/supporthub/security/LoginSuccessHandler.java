@@ -49,7 +49,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler
         log.info("Inside helper method determineTargetUrl.");
         if (user.getFirstLogin() == true)
         {
-            return "/" + user.getUserId() + "/setpassword";
+            return "/setpassword";
         }
         else
         {

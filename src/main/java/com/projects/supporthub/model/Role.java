@@ -19,16 +19,16 @@ public class Role implements GrantedAuthority
     private int id;
 
     @Column(name = "role_name", nullable = false)
-    private String roleName;
+    private String name;
 
     public int getId() 
     {
         return id;
     }
 
-    public String getRoleName() 
+    public String getName() 
     {
-        return roleName;
+        return name;
     }
 
     public void setId(int id) 
@@ -36,13 +36,13 @@ public class Role implements GrantedAuthority
         this.id = id;
     }
 
-    public void setRoleName(String roleName) 
+    public void setName(String name) 
     {
-        this.roleName = roleName;
+        this.name = name;
     }
 
     public String getAuthority()
     {
-        return roleName;
+        return name;
     }
 }
