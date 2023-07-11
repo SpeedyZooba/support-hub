@@ -18,7 +18,7 @@ public class Role implements GrantedAuthority
     @Column(nullable = false, updatable = false)
     private int id;
 
-    @Column(name = "role_name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     public int getId() 
