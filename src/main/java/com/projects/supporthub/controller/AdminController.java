@@ -32,6 +32,7 @@ import com.projects.supporthub.model.User;
 import com.projects.supporthub.model.Ticket.Status;
 import com.projects.supporthub.service.NoticeService;
 import com.projects.supporthub.service.RoleService;
+import com.projects.supporthub.service.SecurityService;
 import com.projects.supporthub.service.TicketService;
 import com.projects.supporthub.service.UserService;
 
@@ -41,6 +42,7 @@ public class AdminController
 {
     private UserService users;
     private RoleService roles;
+    private SecurityService verifier;
     private TicketService tickets;
     private NoticeService notices;
 
@@ -49,9 +51,11 @@ public class AdminController
     private static final PasswordEncoder encryptor = new BCryptPasswordEncoder();
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
 
-    public AdminController(UserService users, RoleService roles, TicketService tickets, NoticeService notices)
+    public AdminController(UserService users, RoleService roles, SecurityService verifier, TicketService tickets, NoticeService notices)
     {
         this.users = users;
+        this.roles = roles;
+        this.verifier = verifier;
         this.tickets = tickets;
         this.notices = notices;
     }
@@ -239,13 +243,15 @@ public class AdminController
     {
         log.info("initUserForm has begun execution.");
         User user = new User();
+        boolean isAdmin = false;
         model.addAttribute("newUser", user);
+        model.addAttribute("perm", isAdmin);
         log.info("initUserForm is about to finish execution.");
         return "newuserform";
     }
 
     @PostMapping("/users/new")
-    public String processUserForm(@Valid @RequestParam("newUser") User user, @RequestParam("perm") boolean adminFlag, BindingResult result)
+    public String processUserForm(@Valid @RequestParam("newUser") User user, @RequestParam("perm") boolean isAdmin, BindingResult result)
     {
         log.info("processUserForm has begun execution.");
         if (result.hasErrors())
@@ -253,7 +259,7 @@ public class AdminController
             log.error("A binding error has occurred.");
             return ERROR_REDIRECTION;
         }
-        if (adminFlag)
+        if (isAdmin)
         {
             user.setRoles(roles.getRole("ROLE_ADMIN"));
         }
@@ -272,19 +278,29 @@ public class AdminController
     {
         log.info("initUserUpdateForm has begun execution.");
         User user = users.getUserById(userId);
+        boolean isAdmin = verifier.isAdmin(user);
         model.addAttribute("user", user);
+        model.addAttribute("perm", isAdmin);
         log.info("initUserUpdateForm is about to finish execution.");
         return "updateuserform";
     }
 
     @PostMapping("/users/{userId}/update")
-    public String processUserUpdateForm(@Valid @RequestParam("user") User user, BindingResult result)
+    public String processUserUpdateForm(@Valid @RequestParam("user") User user, @RequestParam("perm") boolean isAdmin, BindingResult result)
     {
         log.info("processUserUpdateForm has begun execution.");
         if (result.hasErrors())
         {
             log.error("A binding error has occurred.");
             return ERROR_REDIRECTION;
+        }
+        if (isAdmin)
+        {
+            user.setRoles(roles.getRole("ROLE_ADMIN"));
+        }
+        else
+        {
+            user.setRoles(roles.getRole("ROLE_USER"));
         }
         users.newUser(user);
         log.info("processUserUpdateForm is about to finish execution.");

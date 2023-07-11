@@ -1,5 +1,6 @@
 package com.projects.supporthub.service.implementation;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import com.projects.supporthub.model.Role;
 import com.projects.supporthub.model.User;
 import com.projects.supporthub.repository.TicketRepository;
 import com.projects.supporthub.repository.UserRepository;
@@ -27,6 +29,19 @@ public class SecurityServiceImpl implements SecurityService
     {
         this.userRepo = userRepo;
         this.ticketRepo = ticketRepo;
+    }
+
+    public boolean isAdmin(User user)
+    {
+        List<Role> roles = user.getRoles();
+        for (Role role : roles)
+        {
+            if (role.getName().equals("ROLE_ADMIN"))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean userIdVerification(String id)

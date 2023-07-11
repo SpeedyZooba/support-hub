@@ -3,6 +3,7 @@ target/
 **/src/main/resources/logs
 **/src/main/resources/static
 **/src/main/resources/templates
+**/src/main/resources/database
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
