@@ -3,15 +3,14 @@ package com.projects.supporthub.security.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import com.projects.supporthub.security.LoginSuccessHandler;
 
@@ -30,9 +29,6 @@ public class SecurityConfig
                 .requestMatchers("/styles/**").permitAll()
                 .requestMatchers("/images/**").permitAll()
                 .requestMatchers("/resources/**").permitAll()
-                .requestMatchers("/home").hasAnyRole("USER, ADMIN")
-                .requestMatchers("/notices").hasAnyRole("USER, ADMIN")
-                .requestMatchers("/adminpanel/**").hasRole("ADMIN")
                 .requestMatchers("/login*").anonymous().anyRequest().authenticated()
                 )
             .formLogin((formLogin) -> formLogin
@@ -46,7 +42,6 @@ public class SecurityConfig
                 .disable()
                 )
             .sessionManagement((session) -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .sessionConcurrency((concurrency) -> concurrency
                     .maximumSessions(1)
                     .expiredUrl("/login?expired")
@@ -55,18 +50,19 @@ public class SecurityConfig
                 )
             .logout((formLogout) -> formLogout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/login")
+                .logoutSuccessUrl("/login?logout")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID"));
         return http.build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManagerConfig(HttpSecurity http) throws Exception
+    public DaoAuthenticationProvider authenticationProvider()
     {
-        AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authBuilder.userDetailsService(details).passwordEncoder(encoder());
-        return authBuilder.build();
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(details);
+        authProvider.setPasswordEncoder(encoder());
+        return authProvider;
     }
 
     @Bean
@@ -79,5 +75,11 @@ public class SecurityConfig
     public LoginSuccessHandler successHandler()
     {
         return new LoginSuccessHandler();
+    }
+
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() 
+    {
+        return new HttpSessionEventPublisher();
     }
 }

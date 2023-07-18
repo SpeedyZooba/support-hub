@@ -20,6 +20,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,9 +33,12 @@ import com.projects.supporthub.model.Ticket.Status;
 import com.projects.supporthub.service.SecurityService;
 import com.projects.supporthub.service.TicketService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
 @EnableMethodSecurity
 @RequestMapping("/tickets")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class TicketController
 {
     private SecurityService verifier;
@@ -49,6 +53,12 @@ public class TicketController
         this.tickets = tickets;
     }
 
+    @ModelAttribute("requestURI")
+    public String requestURI(final HttpServletRequest request)
+    {
+        return request.getRequestURI();
+    }
+
     @InitBinder
     public void setAllowedFields(WebDataBinder binder)
     {
@@ -56,7 +66,7 @@ public class TicketController
     }
     
     @GetMapping
-    public String displayTicketsByUser(@RequestParam(defaultValue = "1") int page, BindingResult result, Model model)
+    public String displayTicketsByUser(@RequestParam(defaultValue = "1") int page, Model model)
     {
         log.info("displayTicketsByUser has begun execution.");
         log.info("Retrieving the User of this session.");
@@ -98,7 +108,7 @@ public class TicketController
     }
 
     @PostMapping("/new")
-    public String processTicketForm(@Valid @RequestParam("newTicket") Ticket ticket, BindingResult result)
+    public String processTicketForm(@Valid @ModelAttribute("newTicket") Ticket ticket, BindingResult result)
     {
         log.info("processTicketForm has begun execution.");
         if (result.hasErrors())
@@ -140,6 +150,7 @@ public class TicketController
         model.addAttribute("totalPages",pagination.getTotalPages());
         model.addAttribute("totalItems", pagination.getNumberOfElements());
         model.addAttribute("ticketList", tickets);
+        model.addAttribute("pageURL", "/tickets");
         log.info("Helper about to terminate.");
         return "/tickets";
     }

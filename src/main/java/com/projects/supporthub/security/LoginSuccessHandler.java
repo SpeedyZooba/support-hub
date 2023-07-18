@@ -47,13 +47,20 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler
     private String determineTargetUrl(User user) 
     {
         log.info("Inside helper method determineTargetUrl.");
-        if (user.getFirstLogin() == true)
+        if (user.hasRole())
         {
-            return "/setpassword";
+            if (user.getFirstLogin() == true)
+            {
+                return "/profile/setpassword";
+            }
+            else
+            {
+                return "/home";
+            }
         }
         else
         {
-            return "/home";
+            return "/login?denied";
         }
     }
 }

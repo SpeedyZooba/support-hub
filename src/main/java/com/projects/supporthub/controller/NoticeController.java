@@ -8,12 +8,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,8 +24,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.projects.supporthub.model.Notice;
 import com.projects.supporthub.service.NoticeService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
+@EnableMethodSecurity
 @RequestMapping("/notices")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class NoticeController 
 {
     private NoticeService notices;
@@ -35,6 +41,12 @@ public class NoticeController
         this.notices = notices;
     }
 
+    @ModelAttribute("requestURI")
+    public String requestURI(final HttpServletRequest request)
+    {
+        return request.getRequestURI();
+    }
+
     @InitBinder
     public void setAllowedFields(WebDataBinder binder)
     {
@@ -42,7 +54,7 @@ public class NoticeController
     }
 
     @GetMapping
-    public String displayAllNotices(@RequestParam(defaultValue = "1") int page, BindingResult result, Model model)
+    public String displayAllNotices(@RequestParam(defaultValue = "1") int page, Model model)
     {
         log.info("displayAllNotices has begun execution.");
         Page<Notice> noticesFound = findNoticesPaginated(page);
@@ -86,6 +98,7 @@ public class NoticeController
         model.addAttribute("totalPages", pagination.getTotalPages());
         model.addAttribute("totalItems", pagination.getNumberOfElements());
         model.addAttribute("noticeList", notices);
+        model.addAttribute("pageURL", "/notices");
         log.info("Helper about to terminate.");
         return "/notices";
     }

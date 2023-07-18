@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import org.hibernate.annotations.Type;
+
+import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -37,7 +40,8 @@ public class Ticket implements Serializable
     private LocalDate createdAt;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "ticket_status", nullable = false)
+    @Column(name = "ticket_status", columnDefinition = "stat" , nullable = false)
+    @Type(PostgreSQLEnumType.class)
     private Status status;
 
     @Column(name = "response_date")

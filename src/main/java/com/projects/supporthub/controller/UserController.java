@@ -11,12 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.projects.supporthub.model.User;
@@ -33,7 +31,6 @@ public class UserController
     private UserService users;
 
     private static final String ERROR_REDIRECTION = "redirect:/error";
-    private static final String[] BLACKLIST = {"userId", "email", "passwordHash"};
     private static final PasswordEncoder encryptor = new BCryptPasswordEncoder();
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
@@ -41,12 +38,6 @@ public class UserController
     {
         this.verifier = verifier;
         this.users = users;
-    }
-
-    @InitBinder
-    public void setAllowedFields(WebDataBinder dataBinder)
-    {
-        dataBinder.setDisallowedFields(BLACKLIST);
     }
 
     @GetMapping
@@ -73,7 +64,7 @@ public class UserController
     }
 
     @PostMapping("/edit")
-    public String processUpdateForm(@Valid @RequestParam("userToEdit") User user, BindingResult result, String userId)
+    public String processUpdateForm(@Valid @ModelAttribute("userToEdit") User user, BindingResult result)
     {
         log.info("processUpdateForm has begun execution.");
         if (result.hasErrors())
@@ -98,7 +89,7 @@ public class UserController
     }
 
     @PostMapping("/setpassword")
-    public String processPasswordForm(@Valid @RequestParam("firstUser") User user, BindingResult result, @RequestParam("password") String password)
+    public String processPasswordForm(@Valid @ModelAttribute("firstUser") User user, BindingResult result)
     {
         log.info("processPasswordForm has begun execution.");
         if (result.hasErrors())
@@ -106,7 +97,7 @@ public class UserController
             log.error("A binding error has occurred.");
             return ERROR_REDIRECTION;
         }
-        user.setPassword(encryptor.encode(password));
+        user.setPassword(encryptor.encode(user.getPassword()));
         users.newUser(user);
         log.info("processPasswordForm is about to finish execution.");
         return "redirect:/profile";

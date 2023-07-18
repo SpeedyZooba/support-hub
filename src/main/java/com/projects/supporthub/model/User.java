@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,14 +14,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "users")
 public class User implements Serializable
 {
     @Id
-    @Column(name = "id_number", updatable = false, nullable = false)
+    @Column(name = "id_number", nullable = false)
     private String userId;
 
     /**
@@ -38,6 +39,7 @@ public class User implements Serializable
     private String lastName;
 
     @Column(name = "date_of_birth", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
     @Column(name = "department", nullable = false)
@@ -46,8 +48,8 @@ public class User implements Serializable
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Transient
-    private boolean firstLogin = true;
+    @Column(name = "to_be_verified", nullable = false)
+    private boolean firstLogin;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -145,10 +147,7 @@ public class User implements Serializable
 
     public void setFirstLogin(boolean firstLogin) 
     {
-        if (isModifiable())
-        {
-            this.firstLogin = firstLogin;
-        }
+        this.firstLogin = firstLogin;
     }
 
     public void setRoles(List<Role> roles) 
@@ -156,15 +155,15 @@ public class User implements Serializable
         this.roles = roles;
     }
 
-    private boolean isModifiable()
+    public boolean hasRole()
     {
-        if (firstLogin == true)
+        for (Role role : roles)
         {
-            return true;
+            if (role.getName().equals("ROLE_ADMIN") || role.getName().equals("ROLE_USER"))
+            {
+                return true;
+            }
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 }

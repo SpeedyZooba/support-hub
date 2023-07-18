@@ -1,19 +1,17 @@
 <configuration>
-  <!--File Appender-->
-  <appender name="file" class="ch.qos.logback.core.FileAppender">
-    <file>${user.dir}/src/main/resources/logs/application.log</file>
-    <append>true</append>
-    <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-    </encoder>
-  <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-    <fileNamePattern>${user.dir}/src/main/resources/logs/archived/application.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-    <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-      <maxFileSize>10MB</maxFileSize>
-    </timeBasedFileNamingAndTriggeringPolicy>
-  </rollingPolicy>
-  </appender>
-  <root level="info">
-    <appender-ref ref="file"/>
-  </root>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${user.dir}/src/main/resources/logs/application.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${user.dir}/src/main/resources/logs/application.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>5</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="debug">
+        <appender-ref ref="FILE" />
+    </root>
 </configuration>

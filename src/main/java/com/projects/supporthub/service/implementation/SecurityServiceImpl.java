@@ -5,10 +5,8 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import com.projects.supporthub.model.Role;
@@ -25,7 +23,7 @@ public class SecurityServiceImpl implements SecurityService
 
     private static final Logger log = LoggerFactory.getLogger(SecurityServiceImpl.class);
     
-    public SecurityServiceImpl(UserRepository userRepo, TicketRepository ticketRepo, UserDetailsService details, AuthenticationManager authManager)
+    public SecurityServiceImpl(UserRepository userRepo, TicketRepository ticketRepo)
     {
         this.userRepo = userRepo;
         this.ticketRepo = ticketRepo;
@@ -72,6 +70,7 @@ public class SecurityServiceImpl implements SecurityService
         if (user.getFirstLogin() == true)
         {
             user.setFirstLogin(false);
+            userRepo.save(user);
         }
     }
 

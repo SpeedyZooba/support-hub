@@ -11,15 +11,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,8 +36,11 @@ import com.projects.supporthub.service.SecurityService;
 import com.projects.supporthub.service.TicketService;
 import com.projects.supporthub.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/adminpanel")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController 
 {
     private UserService users;
@@ -47,7 +50,6 @@ public class AdminController
     private NoticeService notices;
 
     private static final String ERROR_REDIRECTION = "redirect:/error";
-    private static final String[] BLACKLIST = {"ticketId", "noticeId", "userId", "email", "passwordHash"};
     private static final PasswordEncoder encryptor = new BCryptPasswordEncoder();
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
 
@@ -60,14 +62,20 @@ public class AdminController
         this.notices = notices;
     }
 
-    @InitBinder
-    public void setAllowedFields(WebDataBinder binder)
+    @ModelAttribute("requestURI")
+    public String requestURI(final HttpServletRequest request)
     {
-        binder.setDisallowedFields(BLACKLIST);
+        return request.getRequestURI();
+    }
+
+    @GetMapping
+    public String adminHome()
+    {
+        return "adminpanel";
     }
 
     @GetMapping("/notices")
-    public String displayAllNotices(@RequestParam(defaultValue = "1") int page, BindingResult result, Model model)
+    public String displayAllNotices(@RequestParam(defaultValue = "1") int page, Model model)
     {
         log.info("displayAllNotices has begun execution.");
         Page<Notice> noticesFound = findAllNoticesPaginated(page);
@@ -104,7 +112,7 @@ public class AdminController
     }
 
     @PostMapping("/notices/new")
-    public String processNoticeForm(@Valid @RequestParam("newNotice") Notice notice, BindingResult result)
+    public String processNoticeForm(@Valid @ModelAttribute("newNotice") Notice notice, BindingResult result)
     {
         log.info("processNoticeForm has begun execution.");
         if (result.hasErrors())
@@ -128,7 +136,7 @@ public class AdminController
     }
 
     @PostMapping("/notices/{noticeId}/update")
-    public String processDescriptionUpdateForm(@Valid @RequestParam("notice") Notice notice, BindingResult result)
+    public String processDescriptionUpdateForm(@Valid @ModelAttribute("notice") Notice notice, BindingResult result)
     {
         log.info("processDescriptionUpdateForm is about to finish execution.");
         if (result.hasErrors())
@@ -151,7 +159,7 @@ public class AdminController
     }
 
     @GetMapping("/tickets")
-    public String displayAllTickets(@RequestParam(defaultValue = "1") int page, BindingResult result, Model model)
+    public String displayAllTickets(@RequestParam(defaultValue = "1") int page, Model model)
     {
         log.info("displayAllTickets has begun execution.");
         Page<Ticket> ticketsFound = findAllTicketsPaginated(page);
@@ -177,28 +185,14 @@ public class AdminController
         return mav;
     }
 
-    @GetMapping("/tickets/{ticketId}/update")
-    public String initTicketUpdateForm(@PathVariable("ticketId") UUID ticketId, Model model)
-    {
-        log.info("initUpdateForm has begun execution.");
-        Ticket ticket = tickets.getTicketById(ticketId);
-        model.addAttribute("response", ticket);
-        log.info("initUpdateForm is about to finish execution.");
-        return "response";
-    }
-
     @PostMapping("/tickets/{tickedId}/update")
-    public String processTicketUpdateForm(@Valid @RequestParam("response") Ticket ticket, BindingResult result)
+    public String markAsResolved(@PathVariable("ticketId") UUID ticketId)
     {
-        log.info("processUpdateForm has begun execution.");
-        if (result.hasErrors())
-        {
-            log.error("A binding error has occurred.");
-            return ERROR_REDIRECTION;
-        }
-        ticket.setStatus(Status.ANSWERED);
-        tickets.newTicket(ticket);
-        log.info("processUpdateForm is about to finish execution.");
+        log.info("markAsResolved has begun execution.");
+        Ticket ticketToMark = tickets.getTicketById(ticketId);
+        ticketToMark.setStatus(Status.ANSWERED);
+        tickets.newTicket(ticketToMark);
+        log.info("markAsResolved is about to finish execution.");
         return "redirect:/tickets";
     }
 
@@ -212,7 +206,7 @@ public class AdminController
     }
 
     @GetMapping("/users")
-    public String displayAllUsers(@RequestParam(defaultValue = "1") int page, BindingResult result, Model model)
+    public String displayAllUsers(@RequestParam(defaultValue = "1") int page, Model model)
     {
         log.info("displayAllUsers has begun execution.");
         Page<User> usersFound = findAllUsersPaginated(page);
@@ -251,7 +245,7 @@ public class AdminController
     }
 
     @PostMapping("/users/new")
-    public String processUserForm(@Valid @RequestParam("newUser") User user, @RequestParam("perm") boolean isAdmin, BindingResult result)
+    public String processUserForm(@Valid @ModelAttribute("newUser") User user, @ModelAttribute("perm") boolean isAdmin, BindingResult result)
     {
         log.info("processUserForm has begun execution.");
         if (result.hasErrors())
@@ -268,6 +262,7 @@ public class AdminController
             user.setRoles(roles.getRole("ROLE_USER"));
         }
         user.setPassword(encryptor.encode(user.getPassword()));
+        user.setFirstLogin(true);
         users.newUser(user);
         log.info("processUserForm is about to finish execution.");
         return "redirect:/users/" + user.getUserId();
@@ -286,7 +281,7 @@ public class AdminController
     }
 
     @PostMapping("/users/{userId}/update")
-    public String processUserUpdateForm(@Valid @RequestParam("user") User user, @RequestParam("perm") boolean isAdmin, BindingResult result)
+    public String processUserUpdateForm(@Valid @ModelAttribute("user") User user, @ModelAttribute("perm") boolean isAdmin, BindingResult result)
     {
         log.info("processUserUpdateForm has begun execution.");
         if (result.hasErrors())
@@ -334,6 +329,7 @@ public class AdminController
         model.addAttribute("totalPages", pagination.getTotalPages());
         model.addAttribute("totalItems", pagination.getNumberOfElements());
         model.addAttribute("noticeList", notices);
+        model.addAttribute("pageURL", "/adminpanel/notices");
         log.info("Helper about to terminate.");
         return "/notices";
     }
@@ -356,6 +352,7 @@ public class AdminController
         model.addAttribute("totalPages", pagination.getTotalPages());
         model.addAttribute("totalItems", pagination.getNumberOfElements());
         model.addAttribute("ticketList", tickets);
+        model.addAttribute("pageURL", "/adminpanel/tickets");
         log.info("Helper about to terminate.");
         return "/tickets";
     }
