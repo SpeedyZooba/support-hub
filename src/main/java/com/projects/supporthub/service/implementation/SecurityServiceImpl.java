@@ -15,7 +15,7 @@ import com.projects.supporthub.repository.TicketRepository;
 import com.projects.supporthub.repository.UserRepository;
 import com.projects.supporthub.service.SecurityService;
 
-@Service
+@Service("verifier")
 public class SecurityServiceImpl implements SecurityService
 {
     private final UserRepository userRepo;
@@ -42,6 +42,9 @@ public class SecurityServiceImpl implements SecurityService
         return false;
     }
 
+    /**
+     * Checks whether the {@link User} ID given belongs to that of the session holder, and returns true if so.
+     */
     public boolean userIdVerification(String id)
     {
         log.info("Inside service method userIdVerification.");
@@ -53,11 +56,14 @@ public class SecurityServiceImpl implements SecurityService
         return userRepo.findByEmail(username).get().getUserId().equals(id);
     }
 
+    /**
+     * Checks whether the {@link Ticket} given belongs to the session holder, and returns true if so.
+     */
     public boolean ticketIdVerification(UUID id)
     {
         log.info("Inside service method ticketIdVerification.");
         log.info("Populating UserDetails.");
-        UserDetails detailsToLoad = (UserDetails) SecurityContextHolder.getContext().getAuthentication();
+        UserDetails detailsToLoad = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         log.info("Detail population success.");
         String username = detailsToLoad.getUsername();
         log.info("Returning user id check result.");

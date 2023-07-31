@@ -8,15 +8,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 @EnableMethodSecurity
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class HomeController
 {
     private static final Logger log = LoggerFactory.getLogger(HomeController.class);
     
     @GetMapping("/home")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public String homepage()
     {
         log.info("Homepage initiated.");
         return "home";
+    }
+
+    @GetMapping("/")
+    public String goHome()
+    {
+        return "redirect:/home";
     }
 }

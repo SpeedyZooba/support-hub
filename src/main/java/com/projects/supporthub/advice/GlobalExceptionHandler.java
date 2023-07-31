@@ -50,7 +50,7 @@ public class GlobalExceptionHandler
         ModelAndView mav = new ModelAndView("error");
         mav.addObject("code", HttpStatus.FORBIDDEN.value());
         mav.addObject("cause", HttpStatus.FORBIDDEN.getReasonPhrase());
-        mav.addObject("message", exception.getMessage());
+        mav.addObject("message", "You do not have permission to view this page.");
         return mav;
     }
 

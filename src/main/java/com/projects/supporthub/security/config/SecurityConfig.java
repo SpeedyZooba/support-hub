@@ -45,7 +45,6 @@ public class SecurityConfig
                 .sessionConcurrency((concurrency) -> concurrency
                     .maximumSessions(1)
                     .expiredUrl("/login?expired")
-                    .maxSessionsPreventsLogin(true)
                     )
                 )
             .logout((formLogout) -> formLogout

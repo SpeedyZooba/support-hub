@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,9 +44,9 @@ import jakarta.servlet.http.HttpServletRequest;
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController 
 {
+    private SecurityService verifier;
     private UserService users;
     private RoleService roles;
-    private SecurityService verifier;
     private TicketService tickets;
     private NoticeService notices;
 
@@ -53,11 +54,11 @@ public class AdminController
     private static final PasswordEncoder encryptor = new BCryptPasswordEncoder();
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
 
-    public AdminController(UserService users, RoleService roles, SecurityService verifier, TicketService tickets, NoticeService notices)
+    public AdminController(SecurityService verifier, UserService users, RoleService roles, TicketService tickets, NoticeService notices)
     {
+        this.verifier = verifier;
         this.users = users;
         this.roles = roles;
-        this.verifier = verifier;
         this.tickets = tickets;
         this.notices = notices;
     }
@@ -122,7 +123,7 @@ public class AdminController
         }
         notices.newNotice(notice);
         log.info("processNoticeForm is about to finish execution.");
-        return "redirect:/notices";
+        return "redirect:/adminpanel/notices";
     }
 
     @GetMapping("/notices/{noticeId}/update")
@@ -146,16 +147,16 @@ public class AdminController
         }
         notices.newNotice(notice);
         log.info("processDescriptionUpdateForm is about to finish execution.");
-        return "redirect:/notices";
+        return "redirect:/adminpanel/notices";
     }
 
     @DeleteMapping("/notices/{noticeId}/delete")
-    public String deleteNotice(@PathVariable("noticeId") int noticeId)
+    public ResponseEntity<String> deleteNotice(@PathVariable("noticeId") int noticeId)
     {
         log.info("deleteNotice has begun execution.");
         notices.deleteNoticeById(noticeId);
         log.info("deleteTicket is about to finish execution.");
-        return "redirect:/notices";
+        return ResponseEntity.ok("Notice has been deleted.");
     }
 
     @GetMapping("/tickets")
@@ -185,24 +186,24 @@ public class AdminController
         return mav;
     }
 
-    @PostMapping("/tickets/{tickedId}/update")
-    public String markAsResolved(@PathVariable("ticketId") UUID ticketId)
+    @PostMapping("/tickets/{ticketId}/update")
+    public ResponseEntity<String> markAsResolved(@PathVariable("ticketId") UUID ticketId)
     {
         log.info("markAsResolved has begun execution.");
         Ticket ticketToMark = tickets.getTicketById(ticketId);
         ticketToMark.setStatus(Status.ANSWERED);
         tickets.newTicket(ticketToMark);
         log.info("markAsResolved is about to finish execution.");
-        return "redirect:/tickets";
+        return ResponseEntity.ok("Ticket has been marked.");
     }
 
     @DeleteMapping("/tickets/{ticketId}/delete")
-    public String deleteTicket(@PathVariable("ticketId") UUID ticketId)
+    public ResponseEntity<String> deleteTicket(@PathVariable("ticketId") UUID ticketId)
     {
         log.info("deleteTicket has begun execution.");
         tickets.deleteTicketById(ticketId);
         log.info("deleteTicket is about to finish execution.");
-        return "redirect:/tickets";
+        return ResponseEntity.ok("Ticket has been deleted.");
     }
 
     @GetMapping("/users")
@@ -227,7 +228,9 @@ public class AdminController
         log.info("displayUserById has begun execution.");
         ModelAndView mav = new ModelAndView("userinfo");
         User userFound = users.getUserById(userId);
+        String sessionOwnerId = verifier.sessionOwnerRetrieval().getUserId();
         mav.addObject("user", userFound);
+        mav.addObject("ownerId", sessionOwnerId);
         log.info("displayUserById is about to finish execution.");
         return mav;
     }
@@ -237,15 +240,14 @@ public class AdminController
     {
         log.info("initUserForm has begun execution.");
         User user = new User();
-        boolean isAdmin = false;
         model.addAttribute("newUser", user);
-        model.addAttribute("perm", isAdmin);
         log.info("initUserForm is about to finish execution.");
         return "newuserform";
     }
 
     @PostMapping("/users/new")
-    public String processUserForm(@Valid @ModelAttribute("newUser") User user, @ModelAttribute("perm") boolean isAdmin, BindingResult result)
+    public String processUserForm(@Valid @ModelAttribute("newUser") User user, @RequestParam(name = "perm", defaultValue = "false", 
+                                    required = true) boolean isAdmin, BindingResult result)
     {
         log.info("processUserForm has begun execution.");
         if (result.hasErrors())
@@ -265,7 +267,7 @@ public class AdminController
         user.setFirstLogin(true);
         users.newUser(user);
         log.info("processUserForm is about to finish execution.");
-        return "redirect:/users/" + user.getUserId();
+        return "redirect:/adminpanel/users/" + user.getUserId();
     }
 
     @GetMapping("/users/{userId}/update")
@@ -273,15 +275,14 @@ public class AdminController
     {
         log.info("initUserUpdateForm has begun execution.");
         User user = users.getUserById(userId);
-        boolean isAdmin = verifier.isAdmin(user);
         model.addAttribute("user", user);
-        model.addAttribute("perm", isAdmin);
         log.info("initUserUpdateForm is about to finish execution.");
         return "updateuserform";
     }
 
     @PostMapping("/users/{userId}/update")
-    public String processUserUpdateForm(@Valid @ModelAttribute("user") User user, @ModelAttribute("perm") boolean isAdmin, BindingResult result)
+    public String processUserUpdateForm(@Valid @ModelAttribute("user") User user, @RequestParam(name = "perm", defaultValue = "false", 
+                                        required = true) boolean isAdmin, BindingResult result)
     {
         log.info("processUserUpdateForm has begun execution.");
         if (result.hasErrors())
@@ -299,23 +300,27 @@ public class AdminController
         }
         users.newUser(user);
         log.info("processUserUpdateForm is about to finish execution.");
-        return "redirect:/users/" + user.getUserId();
+        return "redirect:/adminpanel/users/" + user.getUserId();
     }
 
     @DeleteMapping("/users/{userId}/delete")
-    public String deleteUser(@PathVariable("userId") String userId)
+    public ResponseEntity<String> deleteUser(@PathVariable("userId") String userId)
     {
+        if (verifier.userIdVerification(userId))
+        {
+            return ResponseEntity.status(403).body("Self-removal is not permitted.");
+        }
         log.info("deleteUser has begun execution.");
         users.deleteUserById(userId);
         log.info("deleteUser is about to finish execution.");
-        return "redirect:/users";
+        return ResponseEntity.ok("User has been deleted.");
     }
 
     private Page<Notice> findAllNoticesPaginated(int page) 
     {
         log.info("Inside helper mehtod findAllNoticesPaginated.");
         int pageSize = 10;
-        Pageable pages = PageRequest.of(page, pageSize, Sort.by("noticeDate").ascending());
+        Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("noticeDate").ascending());
         log.info("Helper about to terminate.");
         return notices.getAllNotices(pages);
     }

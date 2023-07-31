@@ -1,5 +1,6 @@
 package com.projects.supporthub.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,15 +12,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,12 +58,6 @@ public class TicketController
     {
         return request.getRequestURI();
     }
-
-    @InitBinder
-    public void setAllowedFields(WebDataBinder binder)
-    {
-        binder.setDisallowedFields("ticketId");
-    }
     
     @GetMapping
     public String displayTicketsByUser(@RequestParam(defaultValue = "1") int page, Model model)
@@ -90,8 +84,6 @@ public class TicketController
         log.info("displayTicketById has begun execution.");
         ModelAndView mav = new ModelAndView("ticketinfo");
         Ticket ticketFound = tickets.getTicketById(ticketId);
-        String name = verifier.sessionOwnerRetrieval().getFirstName() + verifier.sessionOwnerRetrieval().getLastName();
-        mav.addObject("name", name);
         mav.addObject("ticket", ticketFound);
         log.info("displayTicketById is about to finish execution.");
         return mav;
@@ -102,6 +94,10 @@ public class TicketController
     {
         log.info("initTicketForm has begun execution.");
         Ticket ticket = new Ticket();
+        String creator = verifier.sessionOwnerRetrieval().getUserId();
+        List<String> categories = populateCategories();
+        model.addAttribute("categories", categories);
+        model.addAttribute("username", creator);
         model.addAttribute("newTicket", ticket);
         log.info("initTicketForm is about to finish execution.");
         return "ticketform";
@@ -124,12 +120,12 @@ public class TicketController
 
     @DeleteMapping("/{ticketId}/delete")
     @PreAuthorize("@verifier.ticketIdVerification(#ticketId)")
-    public String deleteTicket(@PathVariable("ticketId") UUID ticketId, @PathVariable("userId") String userId)
+    public ResponseEntity<String> deleteTicket(@PathVariable("ticketId") UUID ticketId, @PathVariable("userId") String userId)
     {
         log.info("deleteTicktet has begun execution.");
         tickets.deleteTicketById(ticketId);
         log.info("deleteTicket is about to finish execution.");
-        return "redirect:/tickets";
+        return ResponseEntity.ok("Ticket has been deleted.");
     }
 
     private Page<Ticket> findPaginatedForUserId(int page, String userId)
@@ -153,5 +149,14 @@ public class TicketController
         model.addAttribute("pageURL", "/tickets");
         log.info("Helper about to terminate.");
         return "/tickets";
+    }
+
+    private List<String> populateCategories()
+    {
+        List<String> categories = new ArrayList<String>();
+        categories.add("Account Issue");
+        categories.add("Equipment Issue");
+        categories.add("System Issue");
+        return categories;
     }
 }

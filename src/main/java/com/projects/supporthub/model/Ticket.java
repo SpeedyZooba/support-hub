@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import org.hibernate.annotations.Type;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
 import jakarta.persistence.Column;
@@ -14,6 +15,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -33,10 +36,11 @@ public class Ticket implements Serializable
     @Column(name = "issue", nullable = false)
     private String description;
 
-    @Column(name = "creator_id", nullable = false, updatable = false)
+    @Column(name = "creator_id", nullable = false)
     private String createdBy;
 
-    @Column(name = "creation_date", nullable = false, updatable = false, insertable = false)
+    @Column(name = "creation_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate createdAt;
 
     @Enumerated(EnumType.ORDINAL)
@@ -115,5 +119,17 @@ public class Ticket implements Serializable
     public void setStatus(Status status) 
     {
         this.status = status;
+    }
+
+    @PrePersist
+    public void initCreationDate()
+    {
+        createdAt = LocalDate.now();
+    }
+
+    @PreUpdate
+    public void initUpdateDate()
+    {
+        answeredAt = LocalDate.now();
     }
 }
