@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/button.css}" href="../static/styles/button.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/error.css}" href="../static/styles/error.css">
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex flex-column align-items-center">
+            <h1 th:text="${(code) ?: 'Unknown'}"></h1>
+            <h3 th:text="${(cause) ?: 'Error'}"></h3>
+            <p th:text="${(message) ?: 'An unexpected error has occurred.'}"></p>
+            <a th:href="@{/home}" class="btn button">Go Home</a>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>

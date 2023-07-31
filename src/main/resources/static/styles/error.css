@@ -1,0 +1,20 @@
+.container {
+    margin-top: 15%;
+}
+
+h1 {
+    color: #1682e7;
+    font-size: 60px;
+}
+
+h3 {
+    font-size: 45px;
+}
+
+p {
+    font-size: 25px;
+}
+
+.btn {
+    font-size: 20px;
+}

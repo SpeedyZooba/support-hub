@@ -1,0 +1,22 @@
+.field-box {
+    border: 3px #33b8bc;
+    border-style: solid;
+}
+
+.combobox {
+    color: #6c757d;
+    background-color: white;
+    border-color: #dee2e6;
+}
+
+.combobox:hover {
+    background-color: #33b8bc;
+    border-color: #33b8bc;
+    transition: background-color 0.5 ease
+}
+
+.dropdown-item:hover {
+    color: white;
+    background-color: #f29a2d;
+    transition: background-color 0.5 ease;
+}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New User</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/box.css}" href="../static/styles/box.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/button.css}" href="../static/styles/button.css">
+</head>
+<body>
+    <div class="container">
+        <div class="text-center mt-2">
+            <h2>Add a New User</h2>
+            <span>Please fill in the necessary details below.<br>
+            The ID corresponds to the employee number.</br></span>
+        </div>
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6">
+                <div class="card field-box">
+                    <div class="card-body">
+                        <form th:action="@{/adminpanel/users/new}" method="post">
+                            <div th:object="${newUser}">
+                                <label for="id">ID:</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="bi-hash"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" th:field="*{userId}" placeholder="Enter the ID" autocomplete="off" required>
+                                </div>
+                                <label for="email">Email:</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="bi-envelope-fill"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" th:field="*{email}" placeholder="Pick a suitable email" autocomplete="off" required>
+                                </div>
+                                <label for="password">Password:</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="bi-key-fill"></i></span>
+                                    </div>
+                                    <input type="password" class="form-control" th:field="*{password}" placeholder="Set the default password" autocomplete="off" required>
+                                </div>
+                                <label for="firstName">First Name:</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="bi-list"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" th:field="*{firstName}" 
+                                    placeholder="Please enter the first name" autocomplete="off" required>
+                                </div>
+                                <label for="lasttName">Last Name:</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="bi-list"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" th:field="*{lastName}" 
+                                    placeholder="Please enter the last name" autocomplete="off" required>
+                                </div>
+                                <label for="dateOfBirth">Date of Birth:</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="bi-calendar-fill"></i></span>
+                                    </div>
+                                    <input type="date" class="form-control" th:field="*{dateOfBirth}" 
+                                    placeholder="Please pick the date of birth" autocomplete="off" required>
+                                </div>
+                                <label for="department">Department:</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="bi-building-fill"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" th:field="*{department}" 
+                                    placeholder="Please enter the department" autocomplete="off" required>
+                                </div>
+                                <label for="title">Title:</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="bi-person-vcard-fill"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" th:field="*{title}" 
+                                    placeholder="Please enter the title" autocomplete="off" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" th:checked="${perm}" name="perm">
+                                    <label class="form-check-label" for="perm">Grant administrator permissions</label>
+                                </div>
+                            </div>
+                            <button type="submit" class=" btn button">Create</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>

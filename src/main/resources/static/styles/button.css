@@ -1,0 +1,16 @@
+.button {
+    background: linear-gradient(90deg, #cd326d, transparent) #b62d62d9;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #9e3682;
+    color: white;
+}
+
+.page-link:hover {
+    text-decoration: underline;
+}
