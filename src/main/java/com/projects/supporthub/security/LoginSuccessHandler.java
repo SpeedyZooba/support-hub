@@ -12,7 +12,6 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.projects.supporthub.model.User;
-import com.projects.supporthub.service.SecurityService;
 import com.projects.supporthub.service.UserService;
 
 import jakarta.servlet.ServletException;
@@ -23,8 +22,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler
 {
     @Autowired
     private UserService users;
-    @Autowired
-    private SecurityService security;
 
     private static final Logger log = LoggerFactory.getLogger(LoginSuccessHandler.class);
 
@@ -40,7 +37,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler
         User userToCheck = users.getUserByUsername(username);
         log.info("Loading targetUrl using helper method.");
         String targetUrl = determineTargetUrl(userToCheck);
-        security.firstLoginVerification(userToCheck);
         strat.sendRedirect(request, response, targetUrl);
     }
 

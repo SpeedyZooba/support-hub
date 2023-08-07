@@ -2,6 +2,24 @@
     max-width: 150%;
 }
 
+.profile-element {
+    border: none;
+    border-radius: 0;
+    max-width: 50%;
+}
+
+.profile-element-title {
+    color: white;
+    background: linear-gradient(90deg, #e7932c 10%, transparent);
+    max-width: 100%;
+}
+
+.profile-element-title-admin {
+    color: white;
+    background: linear-gradient(90deg, #31aeb3 10%, transparent);
+    max-width: 100%;
+}
+
 .page-element:not(:last-child) {
     border-bottom: 1px solid #e48443;
     padding-bottom: 10px;
@@ -35,4 +53,10 @@
     font-size: 13px;
     color: #888888;
     margin-top: 10px;
+}
+
+.modal-header, .modal-content, .modal-body, .modal-footer
+{
+    border: none;
+    border-radius: 0;
 }

@@ -1,6 +1,8 @@
 .field-box {
-    border: 3px #33b8bc;
-    border-style: solid;
+    border-color: #33b8bc;
+    border-width: 1px;
+    border-radius: 0;
+    background-color: #f7f7f7;
 }
 
 .combobox {

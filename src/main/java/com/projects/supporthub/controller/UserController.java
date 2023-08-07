@@ -83,13 +83,21 @@ public class UserController
         log.info("initPasswordForm has begun execution.");
         log.info("Retrieving the User of this session.");
         User currentUser = verifier.sessionOwnerRetrieval();
-        model.addAttribute("firstUser", currentUser);
+        String password = "";
+        model.addAttribute("password", password);
         log.info("initPasswordForm is about to finish execution.");
-        return "passwordform";
+        if (currentUser.getFirstLogin() == true)
+        {
+            return "pickpassword";
+        }
+        else
+        {
+            return "redirect:/profile/changepassword";
+        }
     }
 
     @PostMapping("/setpassword")
-    public String processPasswordForm(@Valid @ModelAttribute("firstUser") User user, BindingResult result)
+    public String processPasswordForm(@ModelAttribute("password") String password, BindingResult result)
     {
         log.info("processPasswordForm has begun execution.");
         if (result.hasErrors())
@@ -97,9 +105,49 @@ public class UserController
             log.error("A binding error has occurred.");
             return ERROR_REDIRECTION;
         }
-        user.setPassword(encryptor.encode(user.getPassword()));
+        User user = verifier.sessionOwnerRetrieval();
+        user.setPassword(encryptor.encode(password));
+        verifier.firstLoginHandler(user);
         users.newUser(user);
         log.info("processPasswordForm is about to finish execution.");
         return "redirect:/profile";
+    }
+
+    @GetMapping("/changepassword")
+    public String initPasswordChangeForm(Model model)
+    {
+        log.info("initPasswordChangeForm has begun execution.");
+        log.info("Retrieving the User of this session.");
+        String newPassword = "";
+        String oldPassword = "";
+        model.addAttribute("newPassword", newPassword);
+        model.addAttribute("oldPassword", oldPassword);
+        log.info("initPasswordChangeForm is about to finish execution.");
+        return "changepassword";
+    }
+
+    @PostMapping("/changepassword")
+    public String processPasswordChangeForm(@ModelAttribute("oldPassword") String oldPassword, @ModelAttribute("newPassword") String newPassword , BindingResult result)
+    {
+        log.info("processPasswordChangeForm has begun execution.");
+        if (result.hasErrors())
+        {
+            log.error("A binding error has occurred.");
+            return ERROR_REDIRECTION;
+        }
+        User user = verifier.sessionOwnerRetrieval();
+        if (!encryptor.matches(oldPassword, user.getPassword()))
+        {
+            log.debug(oldPassword + " did not match.");
+            return "redirect:/profile/changepassword?error";
+        }
+        else
+        {
+            user.setPassword(encryptor.encode(newPassword));
+            users.newUser(user);
+            log.info("processPasswordForm is about to finish execution.");
+            verifier.forceLogout(user.getEmail());
+            return "redirect:/profile";
+        }
     }
 }

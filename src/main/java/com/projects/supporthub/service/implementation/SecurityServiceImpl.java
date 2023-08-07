@@ -5,7 +5,10 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,9 @@ public class SecurityServiceImpl implements SecurityService
 {
     private final UserRepository userRepo;
     private final TicketRepository ticketRepo;
+
+    @Autowired
+    private SessionRegistry userRegistry;
 
     private static final Logger log = LoggerFactory.getLogger(SecurityServiceImpl.class);
     
@@ -40,6 +46,16 @@ public class SecurityServiceImpl implements SecurityService
             }
         }
         return false;
+    }
+
+    public void firstLoginHandler(User user)
+    {
+        log.info("Inside service method firstLoginVerification.");
+        if (user.getFirstLogin() == true)
+        {
+            user.setFirstLogin(false);
+            userRepo.save(user);
+        }
     }
 
     /**
@@ -70,16 +86,6 @@ public class SecurityServiceImpl implements SecurityService
         return ticketRepo.findById(id).get().getCreatedBy().equals(userRepo.findByEmail(username).get().getUserId());
     }
 
-    public void firstLoginVerification(User user)
-    {
-        log.info("Inside service method firstLoginVerification.");
-        if (user.getFirstLogin() == true)
-        {
-            user.setFirstLogin(false);
-            userRepo.save(user);
-        }
-    }
-
     /**
      * Retrieval of the {@link User} of the session for controllers to use.
      * @return {@link User} of this session
@@ -93,5 +99,28 @@ public class SecurityServiceImpl implements SecurityService
         String username = detailsToLoad.getUsername();
         log.info("Returning User.");
         return userRepo.findByEmail(username).get();
+    }
+
+    /**
+     * Forces the user to logout in case of reauthentication
+     */
+    public void forceLogout(String username)
+    {
+        List<Object> principals = userRegistry.getAllPrincipals();
+        for (Object principal : principals)
+        {
+            if (principal instanceof UserDetails)
+            {
+                UserDetails user = (UserDetails) principal;
+                if (user.getUsername().equals(username))
+                {
+                    List<SessionInformation> sessions = userRegistry.getAllSessions(user, false);
+                    for (SessionInformation session : sessions)
+                    {
+                        session.expireNow();
+                    }
+                }
+            }
+        }
     }
 }

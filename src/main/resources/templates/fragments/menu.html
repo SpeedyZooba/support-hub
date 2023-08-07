@@ -10,16 +10,21 @@
 <body>
     <div class="col-1 sidebar text-white" th:fragment="usermenu">
         <div class="d-flex flex-column justify-content-center align-items-baseline h-100">
-            <div class="mt-auto">
+            <div class="mt-5">
+                <div class="logo flex-column">
+                    <img src="../static/images/menu_logo.png" th:src="@{/images/menu_logo.png}" alt="logo">
+                </div>
+            </div>
+            <div class="mt-auto mb-4">
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link text-white" th:href="@{/home}"><i class="bi-house-fill" style="margin: 7px;"></i>Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" th:href="@{/notices}"><i class="bi-clipboard2-fill" style="margin: 7px"></i>Notices</a>
+                        <a class="nav-link text-white" th:href="@{/notices}"><i class="bi-clipboard2-fill" style="margin: 7px;"></i>Notices</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" th:href="@{/profile}"><i class="bi-person-circle" style="margin: 7px"></i>Profile</a>
+                        <a class="nav-link text-white" th:href="@{/profile}"><i class="bi-person-circle" style="margin: 7px;"></i>Profile</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white" th:href="@{/tickets}"><i class="bi-ticket-detailed-fill" style="margin: 7px;"></i>Tickets</a>
@@ -34,10 +39,7 @@
                     <li class="nav-item">
                         <button class="nav-link text-white" id="darkToggle" style="background: none; border: none; cursor: pointer; outline: none; box-shadow: none;">
                             <span id="modeIcon">
-                                <i class="bi-moon-stars-fill" style="margin: 7px;"></i>
-                            </span>
-                            <span id="modeText">
-                                Dark Mode
+                                <i class="bi-moon-stars-fill" style="margin: 7px"></i>Dark Mode
                             </span>
                         </button>
                     </li>
@@ -54,7 +56,12 @@
     </div>
     <div class="col-1 sidebar-admin text-white" th:fragment="adminmenu">
         <div class="d-flex flex-column justify-content-center align-items-baseline h-100">
-            <div class="mt-auto">
+            <div class="mt-5">
+                <div class="logo flex-column">
+                    <img src="../static/images/menu_logo.png" th:src="@{/images/menu_logo.png}" alt="logo">
+                </div>
+            </div>
+            <div class="mt-auto mb-5" style="width: 90%;">
                 <ul class="nav flex-column">
                     <li class="nav-item admin">
                         <a class="nav-link text-white" th:href="@{/adminpanel/notices}"><i class="bi-clipboard2-fill" style="margin: 7px;"></i>Notices</a>
@@ -73,8 +80,11 @@
             <div class="mt-auto" style="width: 90%;">
                 <ul class="nav flex-column">
                     <li class="nav-item admin">
-                        <button class="nav-link text-white" id="darkToggle" style="background: none; border: none; cursor: pointer;">
-                            <i class="bi-moon-stars-fill" id="modeIcon" style="margin: 7px;"></i>Dark Mode</button>
+                        <button class="nav-link text-white" id="darkToggle" style="background: none; border: none; cursor: pointer; outline: none; box-shadow: none;">
+                            <span id="modeIcon">
+                                <i class="bi-moon-stars-fill" style="margin: 7px"></i>Dark Mode
+                            </span>
+                        </button>
                     </li>
                     <li class="nav-item admin">
                         <form th:action="@{/logout}" method="post">

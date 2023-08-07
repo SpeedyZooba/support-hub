@@ -6,6 +6,11 @@
     transition: background-color 0.3s;
 }
 
+.unclickable {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
 .button:hover {
     background-color: #9e3682;
     color: white;

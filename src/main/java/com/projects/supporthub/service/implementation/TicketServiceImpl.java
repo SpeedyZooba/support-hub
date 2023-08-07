@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.projects.supporthub.exception.TicketNotFoundException;
+import com.projects.supporthub.exception.UserNotFoundException;
 import com.projects.supporthub.model.Ticket;
 import com.projects.supporthub.repository.TicketRepository;
 import com.projects.supporthub.repository.UserRepository;
@@ -75,7 +76,7 @@ public class TicketServiceImpl implements TicketService
         if (!userRepo.findById(id).isPresent())
         {
             log.error("Received invalid userId.");
-            throw new TicketNotFoundException("No user found for ticket display.");
+            throw new UserNotFoundException("The specified user was not found.");
         }
         else
         {

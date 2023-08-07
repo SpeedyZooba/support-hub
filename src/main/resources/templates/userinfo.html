@@ -17,49 +17,84 @@
             <div th:replace="fragments/menu.html :: adminmenu"></div>
             <div class="col-10">
                 <div class="p-4">
-                    <h1>User</h1>
-                    <div class="form-group row page-element">
-                        <label class="col-sm-2 col-form-label">First Name:</label>
+                    <div class="row" style="font-family: fangsong;">
+                        <div class="col-sm-10" style="margin-left: inherit;">
+                            <h2>User</h2>
+                        </div>
+                    </div>
+                    <div class="card row profile-element mt-2">
+                        <label class="col-sm-2 col-form-label profile-element-title-admin"><i class="bi-list" style="padding-right: 5px;"></i>First Name</label>
                         <div class="col-sm-10">
                             <span class="form-control-plaintext" th:text="${user.firstName}"></span>
                         </div>
                     </div>
-                    <div class="form-group row page-element">
-                        <label class="col-sm-2 col-form-label">Last Name:</label>
+                    <div class="card row profile-element mt-3">
+                        <label class="col-sm-2 col-form-label profile-element-title-admin"><i class="bi-list" style="padding-right: 5px;"></i>Last Name</label>
                         <div class="col-sm-10">
                             <span class="form-control-plaintext" th:text="${user.lastName}"></span>
                         </div>
                     </div>
-                    <div class="form-group row page-element">
-                        <label class="col-sm-2 col-form-label">Email:</label>
+                    <div class="card row profile-element mt-3">
+                        <label class="col-sm-2 col-form-label profile-element-title-admin"><i class="bi-envelope" style="padding-right: 5px;"></i>Email</label>
                         <div class="col-sm-10">
                             <span class="form-control-plaintext" th:text="${user.email}"></span>
                         </div>
                     </div>
-                    <div class="form-group row page-element">
-                        <label class="col-sm-2 col-form-label">Date of Birth:</label>
+                    <div class="card row profile-element mt-3">
+                        <label class="col-sm-2 col-form-label profile-element-title-admin"><i class="bi-calendar" style="padding-right: 5px;"></i>Date of Birth</label>
                         <div class="col-sm-10">
                             <span class="form-control-plaintext" th:text="${user.dateOfBirth}"></span>
                         </div>
                     </div>
-                    <div class="form-group row page-element">
-                        <label class="col-sm-2 col-form-label">Department:</label>
+                    <div class="card row profile-element mt-3">
+                        <label class="col-sm-2 col-form-label profile-element-title-admin"><i class="bi-building" style="padding-right: 5px;"></i>Department</label>
                         <div class="col-sm-10">
                             <span class="form-control-plaintext" th:text="${user.department}"></span>
                         </div>
                     </div>
-                    <div class="form-group row page-element">
-                        <label class="col-sm-2 col-form-label">Title:</label>
+                    <div class="card row profile-element mt-3">
+                        <label class="col-sm-2 col-form-label profile-element-title-admin"><i class="bi-person-vcard" style="padding-right: 5px;"></i>Title</label>
                         <div class="col-sm-10">
                             <span class="form-control-plaintext" th:text="${user.title}"></span>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <div class="col-sm-10">
+                    <div class="row mt-3">
+                        <div class="col-sm-10" style="margin-left: inherit;">
                             <a th:href="@{/adminpanel/users/{id}/update(id=${user.userId})}" class="btn button">Edit User Information</a>
-                            <button class="btn button" id="userEraser" th:data-user-id="${user.userId}" th:data-owner-id="${ownerId}">Delete User</button>
+                            <span id="cursorWrap">
+                                <button class="btn button" id="userEraser" th:data-user-id="${user.userId}" th:data-owner-id="${ownerId}">Delete User</button>
+                            </span>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="confirmationModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="confirmStatic" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" id="cancelButton" class="btn button" data-dismiss="modal">No</button>
+                    <button type="button" id="confirmButton" class="btn button">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="alertModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="alertNonStatic" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span></span>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" id="okButton" class="btn button" data-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>
@@ -77,42 +112,81 @@
                 button.setAttribute('disabled', true);
                 button.style.pointerEvents = 'none';
                 button.style.opacity = '0.5';
+                document.getElementById("cursorWrap").style.cursor = "not-allowed";
             }
         });
     </script>
     <script>
-        document.getElementById("userEraser").addEventListener("click", function() {
+        function confirmationPop(message, callback)
+        {
+            $('#confirmationModal .modal-body').text(message);
+            $('#confirmationModal').modal('show');
+
+            $('#confirmationModal').on('click', '#confirmButton', function()
+            {
+                callback(true);
+                $('#confirmationModal').modal('hide');
+            });
+            $('#confirmationModal').on('click', '#cancelButton', function() 
+            {
+                callback(false);
+                $('#confirmationModal').modal('hide');
+            });
+        }
+
+        function alertPop(message, callback)
+        {
+            $('#alertModal .modal-body').text(message);
+            $('#alertModal').modal('show');
+            $('#alertModal').on('hidden.bs.modal', function()
+            {
+                if (callback && typeof callback === 'function')
+                {
+                    callback();
+                }
+            });
+        }
+
+        document.getElementById("userEraser").addEventListener("click", function() 
+        {
             var userId = this.dataset.userId;
             var csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
             var csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
-            var confirmedByUser = confirm("Are you sure you want to remove this user?");
-            if (confirmedByUser)
+            confirmationPop("Are you sure you want to remove this user?", function(confirmedByUser)
             {
-                var xhr = new XMLHttpRequest();
-                xhr.open('DELETE', '/adminpanel/users/' + userId + '/delete', true);
-                xhr.setRequestHeader('Content-Type', 'application/json');
-                xhr.setRequestHeader(csrfHeader, csrfToken);
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4)
+                if (confirmedByUser)
+                {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('DELETE', '/adminpanel/users/' + userId + '/delete', true);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                    xhr.onreadystatechange = function() 
                     {
-                        if (xhr.status === 200)
+                        if (xhr.readyState === 4)
                         {
-                            alert(xhr.responseText);
-                            window.location.href = '/adminpanel/users';
+                            if (xhr.status === 200)
+                            {
+                                alertPop(xhr.responseText, function()
+                                {
+                                    window.location.href = '/adminpanel/users';
+                                });
+                            }
+                            else if (xhr.status === 403)
+                            {
+                                alertPop(xhr.responseText, function()
+                                {
+                                    window.location.reload;
+                                });
+                            }
+                            else
+                            {
+                                console.log("An error has occurred.");
+                            }
                         }
-                        else if (xhr.status === 403)
-                        {
-                            alert(xhr.responseText);
-                            window.location.reload;
-                        }
-                        else
-                        {
-                            console.log("An error has occurred.");
-                        }
-                    }
-                };
-                xhr.send();
-            }
+                    };
+                    xhr.send();
+                }
+            });
         });
     </script>
 </body>

@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService
         if (!user.isPresent())
         {
             log.debug("Received invalid userId.");
-            throw new UserNotFoundException("The requested user not found.");
+            throw new UserNotFoundException("The requested user was not found.");
         }
         else
         {

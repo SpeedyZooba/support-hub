@@ -19,22 +19,34 @@
         </div>
     </div>
     <script>
+        const modeFlag = localStorage.getItem("darkMode");
+
+        if (modeFlag === "enabled")
+        {
+            document.body.className = "dark-mode";
+            document.getElementById("modeIcon").innerHTML = '<i class="bi-sun-fill" style="margin: 7px;"></i>Light Mode';
+        }
+        else
+        {
+            document.body.className = "";
+            document.getElementById("modeIcon").innerHTML = '<i class="bi-moon-stars-fill" style="margin: 7px;"></i>Dark Mode';
+        }
+
         document.getElementById("darkToggle").addEventListener("click", function() {
             var page = document.body;
             var button = document.getElementById("darkToggle");
             var icon = document.getElementById("modeIcon");
-            var text = document.getElementById("modeText");
             if (page.className === "")
             {                
                 page.className = "dark-mode";
-                text.innerText = "Light Mode";
-                icon.innerHTML = '<i class="bi-sun-fill" style="margin: 7px;"></i>'
+                icon.innerHTML = '<i class="bi-sun-fill" style="margin: 7px;"></i>Light Mode';
+                localStorage.setItem("darkMode", "enabled");
             }
             else if (page.className === "dark-mode")
             {
                 page.className = "";
-                text.innerText = "Dark Mode";
-                icon.innerHTML = '<i class="bi-moon-stars-fill" style="margin: 7px;"></i>'
+                icon.innerHTML = '<i class="bi-moon-stars-fill" style="margin: 7px;"></i>Dark Mode';
+                localStorage.setItem("darkMode", "disabled");
             }
         });
     </script>
