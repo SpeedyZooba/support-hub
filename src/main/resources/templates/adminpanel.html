@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Homepage</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/dark.css}" href="../static/styles/dark.css">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/menu.css}" href="../static/styles/menu.css">
@@ -20,31 +20,31 @@
     </div>
     <script>
         const modeFlag = localStorage.getItem("darkMode");
+        var page = document.querySelector("html");
 
         if (modeFlag === "enabled")
         {
-            document.body.className = "dark-mode";
+            page.setAttribute("data-bs-theme", "dark");
             document.getElementById("modeIcon").innerHTML = '<i class="bi-sun-fill" style="margin: 7px;"></i>Light Mode';
         }
         else
         {
-            document.body.className = "";
+            page.removeAttribute("data-bs-theme");
             document.getElementById("modeIcon").innerHTML = '<i class="bi-moon-stars-fill" style="margin: 7px;"></i>Dark Mode';
         }
 
         document.getElementById("darkToggle").addEventListener("click", function() {
-            var page = document.body;
             var button = document.getElementById("darkToggle");
             var icon = document.getElementById("modeIcon");
-            if (page.className === "")
+            if (!page.hasAttribute("data-bs-theme"))
             {                
-                page.className = "dark-mode";
+                page.setAttribute("data-bs-theme", "dark");
                 icon.innerHTML = '<i class="bi-sun-fill" style="margin: 7px;"></i>Light Mode';
                 localStorage.setItem("darkMode", "enabled");
             }
-            else if (page.className === "dark-mode")
+            else
             {
-                page.className = "";
+                page.removeAttribute("data-bs-theme");
                 icon.innerHTML = '<i class="bi-moon-stars-fill" style="margin: 7px;"></i>Dark Mode';
                 localStorage.setItem("darkMode", "disabled");
             }

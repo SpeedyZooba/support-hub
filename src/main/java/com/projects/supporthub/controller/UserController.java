@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.projects.supporthub.model.User;
-import com.projects.supporthub.service.SecurityService;
+import com.projects.supporthub.security.SecurityService;
 import com.projects.supporthub.service.UserService;
 
 @Controller
@@ -105,6 +105,11 @@ public class UserController
             log.error("A binding error has occurred.");
             return ERROR_REDIRECTION;
         }
+        if (!verifier.isValidPassword(password))
+        {
+            log.info("Password does not match the constraints.");
+            return "redirect:/setpassword?error";
+        }
         User user = verifier.sessionOwnerRetrieval();
         user.setPassword(encryptor.encode(password));
         verifier.firstLoginHandler(user);
@@ -138,8 +143,13 @@ public class UserController
         User user = verifier.sessionOwnerRetrieval();
         if (!encryptor.matches(oldPassword, user.getPassword()))
         {
-            log.debug(oldPassword + " did not match.");
+            log.info("Passwords did not match.");
             return "redirect:/profile/changepassword?error";
+        }
+        else if (!verifier.isValidPassword(newPassword))
+        {
+            log.info("Password does not match the constraints.");
+            return "redirect:/profile/changepassword?invalid";
         }
         else
         {

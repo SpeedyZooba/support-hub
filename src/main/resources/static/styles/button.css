@@ -6,7 +6,37 @@
     transition: background-color 0.3s;
 }
 
-.unclickable {
+.form-check-input
+{
+    border: none;
+}
+
+.form-check-input:focus
+{
+    border-color: transparent;
+    box-shadow: none;
+}
+
+:not(.btn-check)+.btn:active
+{
+    color: white;
+    background-color: #b62d62d9;
+}
+
+.btn:first-child:active
+{
+    color: white;
+    background-color: #b62d62d9;
+}
+
+.btn-close
+{
+    --bs-btn-close-focus-shadow: none;
+}
+
+.btn:disabled {
+    color: white;
+    background-color: #cd326d;
     pointer-events: none;
     opacity: 0.5;
 }

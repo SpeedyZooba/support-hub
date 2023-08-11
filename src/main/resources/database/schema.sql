@@ -36,6 +36,15 @@ CREATE TABLE IF NOT EXISTS tickets (
 );
 CREATE INDEX ON tickets(creator_id);
 
+CREATE TABLE IF NOT EXISTS tokens (
+    id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    owned_by        VARCHAR(10),
+    token_string    VARCHAR(64),
+    expiry_date     TIMESTAMP(6),
+    is_used         BOOLEAN
+);
+CREATE INDEX ON tokens(owned_by);
+
 CREATE TABLE IF NOT EXISTS notices (
     notice_id       INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     notice_date     DATE,

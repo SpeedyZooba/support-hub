@@ -5,7 +5,7 @@
     <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Ticket Info</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/menu.css}" href="../static/styles/menu.css">
     <link rel="stylesheet" type="text/css" th:href="@{/styles/page.css}" href="../static/styles/page.css">
@@ -17,45 +17,61 @@
             <div th:replace="fragments/menu.html :: ${#strings.startsWith(requestURI, '/adminpanel')} ? 'adminmenu' : 'usermenu'"></div>
             <div class="col-10">
                 <div class="p-4">
-                    <h1>Ticket</h1>
-                    <div class="form-group row page-element">
-                        <label class="col-sm-2 col-form-label">Issued At:</label>
-                        <div class="col-sm-10">
-                            <span class="form-control-plaintext" th:text="${ticket.createdAt}"></span>
+                    <div class="row" style="font-family: fangsong;">
+                        <div class="col-sm-10" style="margin-left: inherit;">
+                            <h2>Ticket</h2>
                         </div>
                     </div>
-                    <div class="form-group row page-element" th:if="${#strings.startsWith(requestURI, '/adminpanel')}">
-                        <label class="col-sm-2 col-form-label">Issued By:</label>
+                    <div class="card row profile-element mt-2">
+                        <label class="col-sm-2 col-form-label" th:classappend="${#strings.startsWith(requestURI, '/adminpanel')} ? profile-element-title-admin : profile-element-title">
+                            <i class="bi-calendar" style="padding-right: 5px;"></i>Issued At
+                        </label>
+                        <div class="col-sm-10">
+                            <span class="form-control-plaintext" th:text="${#temporals.format(ticket.createdAt, 'dd/MM/yyyy')}"></span>
+                        </div>
+                    </div>
+                    <div class="card row profile-element mt-3" th:if="${#strings.startsWith(requestURI, '/adminpanel')}">
+                        <label class="col-sm-2 col-form-label" th:classappend="${#strings.startsWith(requestURI, '/adminpanel')} ? profile-element-title-admin : profile-element-title">
+                            <i class="bi-person" style="padding-right: 5px;"></i>Issued By
+                        </label>
                         <div class="col-sm-10">
                             <span class="form-control-plaintext" th:text="${ticket.createdBy}"></span>
                         </div>
                     </div>
-                    <div class="form-group row page-element">
-                        <label class="col-sm-2 col-form-label">Category:</label>
+                    <div class="card row profile-element mt-3">
+                        <label class="col-sm-2 col-form-label" th:classappend="${#strings.startsWith(requestURI, '/adminpanel')} ? profile-element-title-admin : profile-element-title">
+                            <i class="bi-card-list" style="padding-right: 5px;"></i>Category
+                        </label>
                         <div class="col-sm-10">
                             <span class="form-control-plaintext" th:text="${ticket.category}"></span>
                         </div>
                     </div>
-                    <div class="form-group row page-element">
-                        <label class="col-sm-2 col-form-label">Description:</label>
+                    <div class="card row profile-element mt-3">
+                        <label class="col-sm-2 col-form-label" th:classappend="${#strings.startsWith(requestURI, '/adminpanel')} ? profile-element-title-admin : profile-element-title">
+                            <i class="bi-list" style="padding-right: 5px;"></i>Description
+                        </label>
                         <div class="col-sm-10">
                             <span class="form-control-plaintext" th:text="${ticket.description}"></span>
                         </div>
                     </div>
-                    <div class="form-group row page-element">
-                        <label class="col-sm-2 col-form-label">Status:</label>
+                    <div class="card row profile-element mt-3">
+                        <label class="col-sm-2 col-form-label" th:classappend="${#strings.startsWith(requestURI, '/adminpanel')} ? profile-element-title-admin : profile-element-title">
+                            <i class="bi-check2-circle" style="padding-right: 5px;"></i>Status
+                        </label>
                         <div class="col-sm-10">
                             <span class="form-control-plaintext" th:text="${ticket.status}"></span>
                         </div>
                     </div>
-                    <div class="form-group row page-element">
-                        <label class="col-sm-2 col-form-label">Answered At:</label>
+                    <div class="card row profile-element mt-3">
+                        <label class="col-sm-2 col-form-label" th:classappend="${#strings.startsWith(requestURI, '/adminpanel')} ? profile-element-title-admin : profile-element-title">
+                            <i class="bi-calendar" style="padding-right: 5px;"></i>Answered At
+                        </label>
                         <div class="col-sm-10">
-                            <span class="form-control-plaintext" th:text="${ticket.answeredAt} ?: 'This issue has not been resolved yet.'"></span>
+                            <span class="form-control-plaintext" th:text="${#temporals.format(ticket.answeredAt, 'dd/MM/yyyy')} ?: 'This issue has not been resolved yet.'"></span>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <div class="col-sm-10">
+                    <div class="row mt-3">
+                        <div class="col-sm-10" style="margin-left: inherit;">
                             <span id="cursorWrap">
                                 <button class="btn button" id="ticketResolver" th:data-ticket-id="${ticket.ticketId}" th:data-status="${ticket.status}" th:if="${#strings.startsWith(requestURI, '/adminpanel')}">Mark As Resolved</button>
                                 <button class="btn button" id="ticketEraser" th:data-ticket-id="${ticket.ticketId}" th:data-uri="${requestURI}">Delete Ticket</button>
@@ -69,9 +85,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body"></div>
                     <div class="modal-footer">
@@ -99,15 +113,34 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var button = document.getElementById("ticketResolver");
-            var answer = button.dataset.status;
-            if (answer === 'ANSWERED')
+        const modeFlag = localStorage.getItem("darkMode");
+        var page = document.querySelector("html");
+
+        if (modeFlag === "enabled")
+        {
+            page.setAttribute("data-bs-theme", "dark");
+            document.getElementById("modeIcon").innerHTML = '<i class="bi-sun-fill" style="margin: 7px;"></i>Light Mode';
+        }
+        else
+        {
+            page.removeAttribute("data-bs-theme");
+            document.getElementById("modeIcon").innerHTML = '<i class="bi-moon-stars-fill" style="margin: 7px;"></i>Dark Mode';
+        }
+
+        document.getElementById("darkToggle").addEventListener("click", function() {
+            var button = document.getElementById("darkToggle");
+            var icon = document.getElementById("modeIcon");
+            if (!page.hasAttribute("data-bs-theme"))
+            {                
+                page.setAttribute("data-bs-theme", "dark");
+                icon.innerHTML = '<i class="bi-sun-fill" style="margin: 7px;"></i>Light Mode';
+                localStorage.setItem("darkMode", "enabled");
+            }
+            else
             {
-                button.setAttribute('disabled', true);
-                button.style.pointerEvents = 'none';
-                document.getElementById("cursorWrap").style.cursor = "not-allowed";
-                button.style.opacity = '0.5';
+                page.removeAttribute("data-bs-theme");
+                icon.innerHTML = '<i class="bi-moon-stars-fill" style="margin: 7px;"></i>Dark Mode';
+                localStorage.setItem("darkMode", "disabled");
             }
         });
     </script>
@@ -142,33 +175,49 @@
             });
         }
 
-        document.getElementById("ticketResolver").addEventListener("click", function() {
-            var ticketId = this.dataset.ticketId;
-            var button = document.getElementById("ticketResolver");
-            var csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
-            var csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
-
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/adminpanel/tickets/' + ticketId + '/update', true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.setRequestHeader(csrfHeader, csrfToken);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4)
-                {
-                    if (xhr.status === 200)
+        document.addEventListener("DOMContentLoaded", function() {
+            var ticketResolverButton = document.getElementById("ticketResolver");
+            if (ticketResolverButton) 
+            {
+                var answer = ticketResolverButton.dataset.status;
+                    if (answer === 'ANSWERED') 
                     {
-                        alertPop(xhr.responseText, function()
+                        ticketResolverButton.setAttribute('disabled', true);
+                        var cursorWrap = document.getElementById("cursorWrap");
+                        if (cursorWrap) 
                         {
-                            window.location.href = '/adminpanel/tickets';
-                        });
+                            cursorWrap.style.cursor = "not-allowed";
+                        }
                     }
-                    else
-                    {
-                        console.log("An error has occurred.");
-                    }
-                }
-            };
-            xhr.send();
+                ticketResolverButton.addEventListener("click", function() {
+                    var ticketId = this.dataset.ticketId;
+                    var button = document.getElementById("ticketResolver");
+                    var csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+                    var csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/adminpanel/tickets/' + ticketId + '/update', true);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4)
+                        {
+                            if (xhr.status === 200)
+                            {
+                                alertPop(xhr.responseText, function()
+                                {
+                                    window.location.href = '/adminpanel/tickets';
+                                });
+                            }
+                            else
+                            {
+                                console.log("An error has occurred.");
+                            }
+                        }
+                    };
+                    xhr.send();
+                });
+            }
         });
 
         document.getElementById("ticketEraser").addEventListener("click", function() {

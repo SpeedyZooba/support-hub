@@ -1,4 +1,4 @@
-package com.projects.supporthub.service.implementation;
+package com.projects.supporthub.security;
 
 import java.util.Collection;
 import java.util.List;

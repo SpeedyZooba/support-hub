@@ -1,7 +1,9 @@
-package com.projects.supporthub.service.implementation;
+package com.projects.supporthub.security;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +18,6 @@ import com.projects.supporthub.model.Role;
 import com.projects.supporthub.model.User;
 import com.projects.supporthub.repository.TicketRepository;
 import com.projects.supporthub.repository.UserRepository;
-import com.projects.supporthub.service.SecurityService;
 
 @Service("verifier")
 public class SecurityServiceImpl implements SecurityService
@@ -27,6 +28,8 @@ public class SecurityServiceImpl implements SecurityService
     @Autowired
     private SessionRegistry userRegistry;
 
+    private static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[+.$])(?!.*\\s).{8,}$";
+    private static final Pattern pattern = Pattern.compile(PASSWORD_REGEX);
     private static final Logger log = LoggerFactory.getLogger(SecurityServiceImpl.class);
     
     public SecurityServiceImpl(UserRepository userRepo, TicketRepository ticketRepo)
@@ -48,11 +51,18 @@ public class SecurityServiceImpl implements SecurityService
         return false;
     }
 
+    public boolean isValidPassword(String charSequence)
+    {
+        Matcher passMatcher = pattern.matcher(charSequence);
+        return passMatcher.matches();
+    }
+
     public void firstLoginHandler(User user)
     {
         log.info("Inside service method firstLoginVerification.");
         if (user.getFirstLogin() == true)
         {
+            log.info("First-time user detected.");
             user.setFirstLogin(false);
             userRepo.save(user);
         }

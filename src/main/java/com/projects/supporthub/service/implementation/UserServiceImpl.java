@@ -12,19 +12,22 @@ import com.projects.supporthub.exception.UserNotFoundException;
 import com.projects.supporthub.model.User;
 import com.projects.supporthub.repository.TicketRepository;
 import com.projects.supporthub.repository.UserRepository;
+import com.projects.supporthub.security.recovery.TokenRepository;
 import com.projects.supporthub.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService
 {
     private UserRepository userRepo;
+    private TokenRepository tokenRepo;
     private TicketRepository ticketRepo;
 
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    public UserServiceImpl(UserRepository userRepo, TicketRepository ticketRepo)
+    public UserServiceImpl(UserRepository userRepo, TokenRepository tokenRepo, TicketRepository ticketRepo)
     {
         this.userRepo = userRepo;
+        this.tokenRepo = tokenRepo;
         this.ticketRepo = ticketRepo;
     }
 
@@ -47,7 +50,8 @@ public class UserServiceImpl implements UserService
         else
         {
             log.debug("Service method deleteUserById calls repo methods deleteById and deleteByCreatorId.");
-            // purging the tickets issued by the user specified before deleting the user itself.
+            // purging the tickets and recovery tokens issued by the user specified before deleting the user itself.
+            tokenRepo.deleteByUserId(id);
             ticketRepo.deleteByCreatorId(id);
             userRepo.deleteById(id);
         }

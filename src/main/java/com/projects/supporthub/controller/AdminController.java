@@ -31,9 +31,9 @@ import com.projects.supporthub.model.Notice;
 import com.projects.supporthub.model.Ticket;
 import com.projects.supporthub.model.User;
 import com.projects.supporthub.model.Ticket.Status;
+import com.projects.supporthub.security.SecurityService;
 import com.projects.supporthub.service.NoticeService;
 import com.projects.supporthub.service.RoleService;
-import com.projects.supporthub.service.SecurityService;
 import com.projects.supporthub.service.TicketService;
 import com.projects.supporthub.service.UserService;
 
@@ -240,6 +240,8 @@ public class AdminController
     {
         log.info("initUserForm has begun execution.");
         User user = new User();
+        boolean isAdmin = false;
+        model.addAttribute("perm", isAdmin);
         model.addAttribute("newUser", user);
         log.info("initUserForm is about to finish execution.");
         return "newuserform";
@@ -275,6 +277,8 @@ public class AdminController
     {
         log.info("initUserUpdateForm has begun execution.");
         User user = users.getUserById(userId);
+        boolean isAdmin = verifier.isAdmin(user) ? true : false;
+        model.addAttribute("perm", isAdmin);
         model.addAttribute("user", user);
         log.info("initUserUpdateForm is about to finish execution.");
         return "updateuserform";
@@ -292,14 +296,17 @@ public class AdminController
         }
         if (isAdmin)
         {
+            log.info("Found admin, setting appropriate role.");
             user.setRoles(roles.getRole("ROLE_ADMIN"));
         }
         else
         {
+            log.info("Found user, setting appropriate role.");
             user.setRoles(roles.getRole("ROLE_USER"));
         }
         users.newUser(user);
         log.info("processUserUpdateForm is about to finish execution.");
+        verifier.forceLogout(user.getEmail());
         return "redirect:/adminpanel/users/" + user.getUserId();
     }
 

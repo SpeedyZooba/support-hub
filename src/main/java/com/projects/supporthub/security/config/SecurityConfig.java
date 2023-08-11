@@ -3,6 +3,8 @@ package com.projects.supporthub.security.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,6 +33,8 @@ public class SecurityConfig
                 .requestMatchers("/styles/**").permitAll()
                 .requestMatchers("/images/**").permitAll()
                 .requestMatchers("/resources/**").permitAll()
+                .requestMatchers("/forgotpassword*").permitAll()
+                .requestMatchers("/resetpassword*").permitAll()
                 .requestMatchers("/login*").anonymous().anyRequest().authenticated()
                 )
             .formLogin((formLogin) -> formLogin
@@ -88,5 +92,11 @@ public class SecurityConfig
     public HttpSessionEventPublisher httpSessionEventPublisher() 
     {
         return new HttpSessionEventPublisher();
+    }
+
+    @Bean
+    public JavaMailSender javaMailSender()
+    {
+        return new JavaMailSenderImpl();
     }
 }

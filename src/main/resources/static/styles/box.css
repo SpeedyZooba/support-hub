@@ -5,6 +5,17 @@
     background-color: #f7f7f7;
 }
 
+.box-link {
+    font-size: 14px;
+    text-decoration: none;
+    color: #888888;
+}
+
+.box-link:hover {
+    text-decoration: none;
+    color: #e7932c;
+}
+
 .combobox {
     color: #6c757d;
     background-color: white;

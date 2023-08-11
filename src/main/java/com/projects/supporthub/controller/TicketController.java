@@ -30,7 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.projects.supporthub.model.Ticket;
 import com.projects.supporthub.model.User;
 import com.projects.supporthub.model.Ticket.Status;
-import com.projects.supporthub.service.SecurityService;
+import com.projects.supporthub.security.SecurityService;
 import com.projects.supporthub.service.TicketService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -120,7 +120,7 @@ public class TicketController
 
     @DeleteMapping("/{ticketId}/delete")
     @PreAuthorize("@verifier.ticketIdVerification(#ticketId)")
-    public ResponseEntity<String> deleteTicket(@PathVariable("ticketId") UUID ticketId, @PathVariable("userId") String userId)
+    public ResponseEntity<String> deleteTicket(@PathVariable("ticketId") UUID ticketId)
     {
         log.info("deleteTicktet has begun execution.");
         tickets.deleteTicketById(ticketId);
