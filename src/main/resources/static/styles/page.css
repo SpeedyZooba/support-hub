@@ -2,6 +2,17 @@
     min-width: 107%;
 }
 
+.page-link:focus
+{
+    box-shadow: none;
+}
+
+.active>.page-link
+{
+    background-color: #31aeb3; 
+    border-color:#31aeb3
+}
+
 .profile-element {
     border: none;
     border-radius: 0;

@@ -53,7 +53,7 @@
                                 <a class="page-link btn-secondary" th:href="@{${pageURL}(page=${currentPage - 1})}" tabindex="-1">Previous</a>
                             </li>
                             <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, totalPages)}" th:classappend="${currentPage == pageNumber} ? 'active'">
-                                <a class="page-link" style="background-color: #31aeb3; border-color:#31aeb3" th:href="@{${pageURL}(page=${pageNumber})}" th:text="${pageNumber}"></a>
+                                <a class="page-link" th:href="@{${pageURL}(page=${pageNumber})}" th:text="${pageNumber}"></a>
                             </li>
                             <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
                                 <a class="page-link btn-secondary" th:href="@{${pageURL}(page=${currentPage + 1})}">Next</a>
