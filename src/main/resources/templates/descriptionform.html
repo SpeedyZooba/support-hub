@@ -21,6 +21,7 @@
                         <form th:action="@{/adminpanel/notices/{id}/update(id=${notice.noticeId})}" th:object="${notice}" method="post">
                             <div class="form-group">
                                 <input type="hidden" th:field="*{noticeDate}" th:value="${notice.noticeDate}">
+                                <input type="hidden" th:field="*{isDeleted}" th:value="${notice.isDeleted}"> 
                             </div>
                             <label for="header">Header</label>
                             <div class="input-group mt-2 mb-3">

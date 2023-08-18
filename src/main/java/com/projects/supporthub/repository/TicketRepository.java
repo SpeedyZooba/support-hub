@@ -20,8 +20,8 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID>
      * @return a Collection of {@link Ticket}s if one or more found
      */
     @Transactional(readOnly = true)
-    @Query("SELECT ticket FROM Ticket ticket WHERE ticket.createdBy = :createdBy")
-    public Page<Ticket> findByCreatorId(@Param("createdBy") String createdBy, Pageable pageable);
+    @Query("SELECT ticket FROM Ticket ticket WHERE ticket.createdBy = :createdBy AND ticket.isDeleted = false")
+    public Page<Ticket> findByCreatorIdAndVisibility(@Param("createdBy") String createdBy, Pageable pageable);
 
     /**
      * Deletes {@link Ticket}s issued by the specific {@link User}.
@@ -31,4 +31,11 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID>
     @Transactional
     @Query("DELETE FROM Ticket ticket WHERE ticket.createdBy = :createdBy")
     public void deleteByCreatorId(@Param("createdBy") String createdBy);
+
+    /**
+     * Retrieves {@link Ticket}s based on their visibility status.
+     */
+    @Transactional(readOnly = true)
+    @Query("SELECT ticket FROM Ticket ticket WHERE ticket.isDeleted = false")
+    public Page<Ticket> findByVisibility(Pageable pageable);
 }

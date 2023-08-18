@@ -21,7 +21,7 @@
                     <div class="card-body">
                         <form th:action="@{/adminpanel/users/new}" method="post">
                             <div th:object="${newUser}">
-                                <label for="id">ID:</label>
+                                <label for="id">Personnel ID</label>
                                 <div class="input-group mt-2 mb-3">
                                     <span class="input-group-text"><i class="bi-hash"></i></span>
                                     <input type="text" class="form-control" th:field="*{userId}" placeholder="Enter the ID" autocomplete="off" required>

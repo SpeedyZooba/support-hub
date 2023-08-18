@@ -51,6 +51,9 @@ public class Ticket implements Serializable
     @Column(name = "response_date")
     private LocalDate answeredAt;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted;
+
     public UUID getTicketId() 
     {
         return ticketId;
@@ -84,6 +87,11 @@ public class Ticket implements Serializable
     public LocalDate getAnsweredAt() 
     {
         return answeredAt;
+    }
+    
+    public boolean getIsDeleted()
+    {
+        return isDeleted;
     }
 
     public void setTicketId(UUID ticketId) 
@@ -119,6 +127,11 @@ public class Ticket implements Serializable
     public void setStatus(Status status) 
     {
         this.status = status;
+    }
+
+    public void setIsDeleted(boolean isDeleted)
+    {
+        this.isDeleted = isDeleted;
     }
 
     @PrePersist

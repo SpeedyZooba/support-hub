@@ -112,6 +112,7 @@ public class TicketController
             log.error("A binding error has occurred.");
             return ERROR_REDIRECTION;
         }
+        ticket.setIsDeleted(false);
         ticket.setStatus(Status.PENDING);
         tickets.newTicket(ticket);
         log.info("processTicketForm is about to finish execution.");
@@ -128,7 +129,9 @@ public class TicketController
             return ResponseEntity.status(403).body("This ticket cannot be removed as it has already been answered.");
         }
         log.info("deleteTicktet has begun execution.");
-        tickets.deleteTicketById(ticketId);
+        Ticket ticketToDelete = tickets.getTicketById(ticketId);
+        ticketToDelete.setIsDeleted(true);
+        tickets.newTicket(ticketToDelete);
         log.info("deleteTicket is about to finish execution.");
         return ResponseEntity.ok("Ticket has been deleted.");
     }

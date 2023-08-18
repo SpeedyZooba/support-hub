@@ -35,27 +35,11 @@ public class NoticeServiceImpl implements NoticeService
         noticeRepo.save(notice);
     }
 
-    public void deleteNoticeById(int id)
-    {
-        log.info("Inside service method deleteNoticeById.");
-        log.info("Service method deleteNoticeById is about to call repo method findById.");
-        if (!noticeRepo.findById(id).isPresent())
-        {
-            log.error("Recevied invalid noticeId.");
-            throw new NoticeNotFoundException("Notice not found.");
-        }
-        else
-        {
-            log.info("Service method deleteNoticeById calls repo method deleteById.");
-            noticeRepo.deleteById(id);
-        }
-    }
-
     public Notice getNoticeById(int id)
     {
         log.info("Inside service method getNoticeById.");
         Optional<Notice> notice = noticeRepo.findById(id);
-        if (!notice.isPresent())
+        if (!notice.isPresent() || notice.get().getIsDeleted() == true)
         {
             log.error("Received invalid noticeId.");
             throw new NoticeNotFoundException("Notice not found.");
@@ -71,12 +55,12 @@ public class NoticeServiceImpl implements NoticeService
     {
         log.info("Inside service method getAllNotices.");
         log.info("Service method getAllNotices calls repo method findAll for return.");
-        return noticeRepo.findAll(pageable);
+        return noticeRepo.findByVisibility(pageable);
     }
 
     public List<Notice> getLatestNotices()
     {
-        Page<Notice> notices = noticeRepo.findAll(PageRequest.of(0, 5, Sort.by("noticeDate").descending()));
+        Page<Notice> notices = noticeRepo.findByVisibility(PageRequest.of(0, 5, Sort.by("noticeDate").descending()));
         return notices.getContent();
     }
 }

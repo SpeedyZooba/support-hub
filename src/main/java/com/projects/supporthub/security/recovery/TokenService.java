@@ -37,6 +37,7 @@ public class TokenService
         log.info("Inside service method createRecoveryToken.");
         if (!tokenRepo.findByUserId(userId).isEmpty())
         {
+            log.info("Purging previously created tokens.");
             tokenRepo.deleteByUserId(userId);
         }
         String token = generate();

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.projects.supporthub.model.User;
@@ -97,14 +98,9 @@ public class UserController
     }
 
     @PostMapping("/setpassword")
-    public String processPasswordForm(@ModelAttribute("password") String password, BindingResult result)
+    public String processPasswordForm(@RequestParam("password") String password)
     {
         log.info("processPasswordForm has begun execution.");
-        if (result.hasErrors())
-        {
-            log.error("A binding error has occurred.");
-            return ERROR_REDIRECTION;
-        }
         if (!verifier.isValidPassword(password))
         {
             log.info("Password does not match the constraints.");
@@ -132,14 +128,8 @@ public class UserController
     }
 
     @PostMapping("/changepassword")
-    public String processPasswordChangeForm(@ModelAttribute("oldPassword") String oldPassword, @ModelAttribute("newPassword") String newPassword , BindingResult result)
+    public String processPasswordChangeForm(@RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword)
     {
-        log.info("processPasswordChangeForm has begun execution.");
-        if (result.hasErrors())
-        {
-            log.error("A binding error has occurred.");
-            return ERROR_REDIRECTION;
-        }
         User user = verifier.sessionOwnerRetrieval();
         if (!encryptor.matches(oldPassword, user.getPassword()))
         {

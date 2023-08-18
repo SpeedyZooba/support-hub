@@ -61,8 +61,11 @@
                     <img src="../static/images/menu_logo.png" th:src="@{/images/menu_logo.png}" alt="logo">
                 </div>
             </div>
-            <div class="mt-auto mb-5" style="width: 90%;">
+            <div class="mt-auto mb-4" style="width: 90%;">
                 <ul class="nav flex-column">
+                    <li class="nav-item admin">
+                        <a class="nav-link text-white" th:href="@{/adminpanel}"><i class="bi-house-fill" style="margin: 7px;"></i>Home</a>
+                    </li>
                     <li class="nav-item admin">
                         <a class="nav-link text-white" th:href="@{/adminpanel/notices}"><i class="bi-clipboard2-fill" style="margin: 7px;"></i>Notices</a>
                     </li>

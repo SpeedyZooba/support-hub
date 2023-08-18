@@ -52,15 +52,18 @@ public class RecoveryController
     @PostMapping("/forgotpassword")
     public String processForgotPasswordForm(@RequestParam(name = "email", required = true) String email, RedirectAttributes redirect)
     {
-        try {
+        try 
+        {
+            log.info("Fetching user for verification.");
             User user = users.getUserByUsername(email);
+            log.info("Creating token...");
             RecoveryToken token = tokens.createRecoveryToken(user.getUserId());
             helper.sendAccountRecoveryMail(email, "localhost:8080/resetpassword?req=" + token.getTokenString());
             redirect.addFlashAttribute("success", "An email containing the link for resetting your password has been sent to your email account.");
             return "redirect:/login";
         }
         catch (UserNotFoundException exception) {
-            log.error("Unable to find an email for recovery.");
+            log.error("Unable to find a user to recover.");
             redirect.addFlashAttribute("notFound", "A user with this email does not exist.");
             return "redirect:/forgotpassword";
         }
@@ -69,9 +72,11 @@ public class RecoveryController
     @GetMapping("/resetpassword")
     public String initResetPasswordForm(@RequestParam(name = "req", required = true) String tokenString, Model model, RedirectAttributes redirect)
     {
+        log.info("initResetPasswordForm has begun execution.");
         Optional<RecoveryToken> token = tokens.getTokenFromString(tokenString);
         if (!token.isPresent() || token.get().isExpired() || token.get().isUsed())
         {
+            log.info("Token ineligible to be used for recovery verification.");
             redirect.addFlashAttribute("failure", "Invalid link for recovery.");
             return "redirect:/login";        
         }
@@ -80,6 +85,7 @@ public class RecoveryController
         model.addAttribute("req", tokenString);
         model.addAttribute("newPassword", newPassword);
         model.addAttribute("userId", userId);
+        log.info("initResetPasswordForm is about to finish execution.");
         return "resetpassword";
     }
 
@@ -87,15 +93,18 @@ public class RecoveryController
     public String processResetPasswordForm(@RequestParam(name = "req", required = true) String tokenString, @RequestParam(name = "newPassword", required = true) String password, 
                                                 @RequestParam(name = "userId", required = true) String userId, RedirectAttributes redirect)
     {
+        log.info("processResetPasswordForm has begun execution.");
         User user = users.getUserById(userId);
         RecoveryToken token = tokens.getTokenFromString(tokenString).get();
         if (encryptor.matches(password, user.getPassword()))
         {
+            log.info("Matches with the current password.");
             redirect.addFlashAttribute("matches", "Your new password cannot be the same as the old one.");
             return "redirect:/resetpassword?req=" + tokenString;
         }
         else if (!verifier.isValidPassword(password))
         {
+            log.info("Password does not match the constraints.");
             redirect.addFlashAttribute("invalid", "An error has occurred while processing your password.");
             return "redirect:/resetpassword?req=" + tokenString;
         }
@@ -108,6 +117,7 @@ public class RecoveryController
             tokens.saveToken(token);
             verifier.forceLogout(user.getEmail());
             redirect.addFlashAttribute("changeSuccess", "Your password has been successfully updated.");
+            log.info("processResetPasswordForm is about to finish execution.");
             return "redirect:/login";
         }
     }

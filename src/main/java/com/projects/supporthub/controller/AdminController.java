@@ -167,7 +167,9 @@ public class AdminController
     public ResponseEntity<String> deleteNotice(@PathVariable("noticeId") int noticeId)
     {
         log.info("deleteNotice has begun execution.");
-        notices.deleteNoticeById(noticeId);
+        Notice noticeToDelete = notices.getNoticeById(noticeId);
+        noticeToDelete.setIsDeleted(true);
+        notices.newNotice(noticeToDelete);
         log.info("deleteTicket is about to finish execution.");
         return ResponseEntity.ok("Notice has been deleted.");
     }
@@ -214,7 +216,9 @@ public class AdminController
     public ResponseEntity<String> deleteTicket(@PathVariable("ticketId") UUID ticketId)
     {
         log.info("deleteTicket has begun execution.");
-        tickets.deleteTicketById(ticketId);
+        Ticket ticketToDelete = tickets.getTicketById(ticketId);
+        ticketToDelete.setIsDeleted(true);
+        tickets.newTicket(ticketToDelete);
         log.info("deleteTicket is about to finish execution.");
         return ResponseEntity.ok("Ticket has been deleted.");
     }

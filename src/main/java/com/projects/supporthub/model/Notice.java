@@ -32,6 +32,9 @@ public class Notice implements Serializable
     @Column(name = "announcement", nullable = false)
     private String description;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted;
+
     public int getNoticeId() 
     {
         return noticeId;
@@ -52,6 +55,11 @@ public class Notice implements Serializable
         return description;
     }
 
+    public boolean getIsDeleted()
+    {
+        return isDeleted;
+    }
+
     public void setNoticeId(int noticeId)
     {
         this.noticeId = noticeId;
@@ -70,6 +78,11 @@ public class Notice implements Serializable
     public void setDescription(String description) 
     {
         this.description = description;
+    }
+
+    public void setIsDeleted(boolean isDeleted) 
+    {
+        this.isDeleted = isDeleted;
     }
 
     @PrePersist
