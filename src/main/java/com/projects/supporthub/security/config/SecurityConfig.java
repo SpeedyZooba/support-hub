@@ -30,6 +30,7 @@ public class SecurityConfig
     {
         http.
             authorizeHttpRequests((authz) -> authz
+                .requestMatchers("/js/**").permitAll()
                 .requestMatchers("/styles/**").permitAll()
                 .requestMatchers("/images/**").permitAll()
                 .requestMatchers("/resources/**").permitAll()

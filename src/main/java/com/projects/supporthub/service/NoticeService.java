@@ -1,5 +1,7 @@
 package com.projects.supporthub.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,4 +13,5 @@ public interface NoticeService
     public void deleteNoticeById(int id);
     public Notice getNoticeById(int id);
     public Page<Notice> getAllNotices(Pageable pageable);
+    public List<Notice> getLatestNotices();
 }

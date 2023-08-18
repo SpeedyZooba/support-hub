@@ -122,6 +122,11 @@ public class TicketController
     @PreAuthorize("@verifier.ticketIdVerification(#ticketId)")
     public ResponseEntity<String> deleteTicket(@PathVariable("ticketId") UUID ticketId)
     {
+        Ticket ticket = tickets.getTicketById(ticketId);
+        if (ticket.getStatus().name().equals("ANSWERED"))
+        {
+            return ResponseEntity.status(403).body("This ticket cannot be removed as it has already been answered.");
+        }
         log.info("deleteTicktet has begun execution.");
         tickets.deleteTicketById(ticketId);
         log.info("deleteTicket is about to finish execution.");
@@ -131,8 +136,8 @@ public class TicketController
     private Page<Ticket> findPaginatedForUserId(int page, String userId)
     {
         log.info("Inside helper method findPaginatedForUserId.");
-        int pageSize = 10;
-        Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("createdAt").ascending());
+        int pageSize = 15;
+        Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("createdAt").descending());
         log.info("Helper about to terminate.");
         return tickets.getTicketByUserId(userId, pages);
     }

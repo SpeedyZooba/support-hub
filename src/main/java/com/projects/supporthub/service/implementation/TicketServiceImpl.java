@@ -1,12 +1,15 @@
 package com.projects.supporthub.service.implementation;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.projects.supporthub.exception.TicketNotFoundException;
@@ -90,5 +93,17 @@ public class TicketServiceImpl implements TicketService
         log.info("Inside service method getAllTickets.");
         log.info("Service method getAllTickets calls repo method findAll for return.");
         return ticketRepo.findAll(pageable);
+    }
+
+    public List<Ticket> getLatestTickets(String userId)
+    {
+        Page<Ticket> results = ticketRepo.findByCreatorId(userId, PageRequest.of(0, 5, Sort.by("createdAt").descending()));
+        return results.getContent();
+    }
+
+    public List<Ticket> getAllLatestTickets()
+    {
+        Page<Ticket> results = ticketRepo.findAll(PageRequest.of(0, 5, Sort.by("createdAt").descending()));
+        return results.getContent();
     }
 }

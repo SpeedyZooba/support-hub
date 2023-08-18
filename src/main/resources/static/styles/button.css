@@ -6,14 +6,8 @@
     transition: background-color 0.3s;
 }
 
-.form-check-input
-{
-    border: none;
-}
-
 .form-check-input:focus
 {
-    border-color: transparent;
     box-shadow: none;
 }
 

@@ -75,8 +75,8 @@ public class NoticeController
     private Page<Notice> findNoticesPaginated(int page) 
     {
         log.info("Inside helper method findNoticesPaginated.");
-        int pageSize = 10;
-        Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("noticeDate").ascending());
+        int pageSize = 15;
+        Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("noticeDate").descending());
         log.info("Helper about to terminate.");
         return notices.getAllNotices(pages);
     }

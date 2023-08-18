@@ -70,8 +70,21 @@ public class AdminController
     }
 
     @GetMapping
-    public String adminHome()
+    public String adminHome(Model model)
     {
+        User admin = verifier.sessionOwnerRetrieval();
+        model.addAttribute("firstName", admin.getFirstName());
+        model.addAttribute("lastName", admin.getLastName());
+        model.addAttribute("department", admin.getDepartment());
+        model.addAttribute("title", admin.getTitle());
+        
+        List<Ticket> ticketList = tickets.getAllLatestTickets();
+        model.addAttribute("ticketList", ticketList);
+
+        List<Notice> noticeList = notices.getLatestNotices();
+        model.addAttribute("noticeList", noticeList);
+
+        log.info("Admin homepage initiated.");
         return "adminpanel";
     }
 
@@ -326,8 +339,8 @@ public class AdminController
     private Page<Notice> findAllNoticesPaginated(int page) 
     {
         log.info("Inside helper mehtod findAllNoticesPaginated.");
-        int pageSize = 10;
-        Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("noticeDate").ascending());
+        int pageSize = 15;
+        Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("noticeDate").descending());
         log.info("Helper about to terminate.");
         return notices.getAllNotices(pages);
     }
@@ -349,8 +362,8 @@ public class AdminController
     private Page<Ticket> findAllTicketsPaginated(int page) 
     {
         log.info("Inside helper method findAllTicketsPaginated.");
-        int pageSize = 10;
-        Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("createdAt").ascending());
+        int pageSize = 15;
+        Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("createdAt").descending());
         log.info("Helper about to terminate.");
         return tickets.getAllTickets(pages);
     }
@@ -372,7 +385,7 @@ public class AdminController
     private Page<User> findAllUsersPaginated(int page) 
     {
         log.info("Inside helper method findAllUsersPaginated.");
-        int pageSize = 10;
+        int pageSize = 15;
         Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("lastName").ascending());
         log.info("Helper about to terminate.");
         return users.getAllUsers(pages);

@@ -64,37 +64,6 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-    <script>
-        const modeFlag = localStorage.getItem("darkMode");
-        var page = document.querySelector("html");
-
-        if (modeFlag === "enabled")
-        {
-            page.setAttribute("data-bs-theme", "dark");
-            document.getElementById("modeIcon").innerHTML = '<i class="bi-sun-fill" style="margin: 7px;"></i>Light Mode';
-        }
-        else
-        {
-            page.removeAttribute("data-bs-theme");
-            document.getElementById("modeIcon").innerHTML = '<i class="bi-moon-stars-fill" style="margin: 7px;"></i>Dark Mode';
-        }
-
-        document.getElementById("darkToggle").addEventListener("click", function() {
-            var button = document.getElementById("darkToggle");
-            var icon = document.getElementById("modeIcon");
-            if (!page.hasAttribute("data-bs-theme"))
-            {                
-                page.setAttribute("data-bs-theme", "dark");
-                icon.innerHTML = '<i class="bi-sun-fill" style="margin: 7px;"></i>Light Mode';
-                localStorage.setItem("darkMode", "enabled");
-            }
-            else
-            {
-                page.removeAttribute("data-bs-theme");
-                icon.innerHTML = '<i class="bi-moon-stars-fill" style="margin: 7px;"></i>Dark Mode';
-                localStorage.setItem("darkMode", "disabled");
-            }
-        });
-    </script>
+    <script type="text/javascript" th:src="@{/js/pageMode.js}" src="../static/js/pageMode.js"></script>
 </body>
 </html>

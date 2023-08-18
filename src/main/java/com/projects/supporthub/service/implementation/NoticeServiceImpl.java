@@ -1,12 +1,14 @@
 package com.projects.supporthub.service.implementation;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.projects.supporthub.exception.NoticeNotFoundException;
@@ -72,13 +74,9 @@ public class NoticeServiceImpl implements NoticeService
         return noticeRepo.findAll(pageable);
     }
 
-    /**
-     * Scheduled task to purge notices monthly for resource management.
-     */
-    @Scheduled(cron = "0 0 9 * * *")
-    public void purge()
+    public List<Notice> getLatestNotices()
     {
-        log.info("Service method purge calls repo method deleteByAMonth.");
-        noticeRepo.deleteByAMonth();
+        Page<Notice> notices = noticeRepo.findAll(PageRequest.of(0, 5, Sort.by("noticeDate").descending()));
+        return notices.getContent();
     }
 }

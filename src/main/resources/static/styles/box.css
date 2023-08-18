@@ -22,6 +22,19 @@
     border-color: #dee2e6;
 }
 
+.combobox-dark {
+    color: #AEB2B6;
+    background-color: #212529;
+    border-color: #495057;
+}
+
+.combobox-dark:hover
+{
+    background-color: #33b8bc;
+    border-color: #33b8bc;
+    transition: background-color 0.5 ease;
+}
+
 .combobox:hover {
     background-color: #33b8bc;
     border-color: #33b8bc;
