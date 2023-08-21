@@ -83,13 +83,13 @@ public class TicketServiceImpl implements TicketService
 
     public List<Ticket> getLatestTickets(String userId)
     {
-        Page<Ticket> results = ticketRepo.findByCreatorIdAndVisibility(userId, PageRequest.of(0, 5, Sort.by("createdAt").descending()));
+        Page<Ticket> results = ticketRepo.findByCreatorIdAndVisibility(userId, PageRequest.of(0, 5, Sort.by("status").ascending().and(Sort.by("createdAt").descending())));
         return results.getContent();
     }
 
     public List<Ticket> getAllLatestTickets()
     {
-        Page<Ticket> results = ticketRepo.findByVisibility(PageRequest.of(0, 5, Sort.by("createdAt").descending()));
+        Page<Ticket> results = ticketRepo.findByVisibility(PageRequest.of(0, 5, Sort.by("status").ascending().and(Sort.by("createdAt").descending())));
         return results.getContent();
     }
 }

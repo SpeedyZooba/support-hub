@@ -37,8 +37,8 @@
                             <label for="description">Description</label>
                             <div class="input-group mt-2 mb-3">
                                 <span class="input-group-text"><i class="bi-list"></i></span>
-                                <input type="text" class="form-control" th:field="*{description}" 
-                                placeholder="Please describe the issue" autocomplete="off" required>
+                                <textarea id="inputArea" class="form-control dynamic-field" rows="1" th:field="*{description}" 
+                                placeholder="Please describe the issue" autocomplete="off" required></textarea>
                             </div>
                             <button type="submit" class=" btn button">Submit</button>
                         </form>
@@ -52,5 +52,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" th:src="@{/js/formMode.js}" src="../static/js/formMode.js"></script>
     <script type="text/javascript" th:src="@{/js/combobox.js}" src="../static/js/combobox.js"></script>
+    <script type="text/javascript" th:src="@{/js/dynamicField.js}" src="../static/js/dynamicField.js"></script>
 </body>
 </html>

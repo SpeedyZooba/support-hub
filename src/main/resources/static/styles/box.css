@@ -5,6 +5,11 @@
     background-color: #f7f7f7;
 }
 
+.dynamic-field {
+    resize: none;
+    overflow-y: hidden;
+}
+
 .box-link {
     font-size: 14px;
     text-decoration: none;

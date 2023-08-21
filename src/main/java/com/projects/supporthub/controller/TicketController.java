@@ -140,7 +140,7 @@ public class TicketController
     {
         log.info("Inside helper method findPaginatedForUserId.");
         int pageSize = 15;
-        Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("createdAt").descending());
+        Pageable pages = PageRequest.of(page - 1, pageSize, Sort.by("status").ascending().and(Sort.by("createdAt").descending()));
         log.info("Helper about to terminate.");
         return tickets.getTicketByUserId(userId, pages);
     }

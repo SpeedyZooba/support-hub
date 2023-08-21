@@ -1,5 +1,7 @@
 package com.projects.supporthub.controller;
 
+import java.time.LocalDateTime;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -108,6 +110,7 @@ public class UserController
         }
         User user = verifier.sessionOwnerRetrieval();
         user.setPassword(encryptor.encode(password));
+        user.setLastPassChange(LocalDateTime.now());
         verifier.firstLoginHandler(user);
         users.newUser(user);
         log.info("processPasswordForm is about to finish execution.");
@@ -144,6 +147,7 @@ public class UserController
         else
         {
             user.setPassword(encryptor.encode(newPassword));
+            user.setLastPassChange(LocalDateTime.now());
             users.newUser(user);
             log.info("processPasswordForm is about to finish execution.");
             verifier.forceLogout(user.getEmail());

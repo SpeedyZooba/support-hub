@@ -2,6 +2,7 @@ package com.projects.supporthub.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -51,6 +52,10 @@ public class User implements Serializable
 
     @Column(name = "to_be_verified", nullable = false)
     private boolean firstLogin;
+
+    @Column(name = "last_pass_change")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime lastPassChange;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -106,6 +111,11 @@ public class User implements Serializable
         return firstLogin;
     }
 
+    public LocalDateTime getLastPassChange() 
+    {
+        return lastPassChange;
+    }
+
     public void setUserId(String userId) 
     {
         this.userId = userId;
@@ -149,6 +159,11 @@ public class User implements Serializable
     public void setFirstLogin(boolean firstLogin) 
     {
         this.firstLogin = firstLogin;
+    }
+
+    public void setLastPassChange(LocalDateTime lastPassChange) 
+    {
+        this.lastPassChange = lastPassChange;
     }
 
     public void setRoles(List<Role> roles) 

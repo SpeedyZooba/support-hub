@@ -1,5 +1,6 @@
 package com.projects.supporthub.system;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -112,6 +113,7 @@ public class RecoveryController
         {
             log.info("Conditions met for password change.");
             user.setPassword(encryptor.encode(password));
+            user.setLastPassChange(LocalDateTime.now());
             token.setIsUsed(true);
             users.newUser(user);
             tokens.saveToken(token);

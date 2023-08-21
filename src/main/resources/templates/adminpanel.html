@@ -20,7 +20,7 @@
                             <div class="card text-bg-light mx-auto" id="profileCard" style="border-color: #33b8bc; width: 90%;">
                                 <div class="card-header">
                                     <span class="h3" style="font-family: fangsong;"><i class="bi bi-person" style="padding-right: 5px;"></i>Profile</span>
-                                    <a th:href="@{/profile}" class="btn button float-end">Go to Profile</a>
+                                    <a th:href="@{/adminpanel/users/{id}(id=${userId})}" class="btn button float-end">View Info</a>
                                 </div>
                                 <div class="card-body">
                                     <div class="card-text row">
