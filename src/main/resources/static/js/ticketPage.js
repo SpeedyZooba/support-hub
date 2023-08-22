@@ -30,18 +30,18 @@ function alertPop(message, callback)
 
 document.addEventListener("DOMContentLoaded", function()
 {
-    var button = document.getElementById("ticketEraser");
-    var answer = button.dataset.status;
-    var requestURI = button.dataset.uri;
+    const button = document.getElementById("ticketEraser");
+    const answer = button.dataset.status;
+    const requestURI = button.dataset.uri;
     if (!requestURI.startsWith("/adminpanel") && answer === 'ANSWERED')
     {
         button.setAttribute('disabled', true);
-        var cursorWrap = document.getElementById("cursorWrap").style.cursor = "not-allowed";
+        document.getElementById("cursorWrap").style.cursor = "not-allowed";
     }
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    var ticketResolverButton = document.getElementById("ticketResolver");
+    const ticketResolverButton = document.getElementById("ticketResolver");
     if (ticketResolverButton) 
     {
         var answer = ticketResolverButton.dataset.status;
@@ -55,12 +55,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
         ticketResolverButton.addEventListener("click", function() {
-            var ticketId = this.dataset.ticketId;
-            var button = document.getElementById("ticketResolver");
-            var csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
-            var csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+            const ticketId = this.dataset.ticketId;
+            const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+            const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
 
-            var xhr = new XMLHttpRequest();
+            const xhr = new XMLHttpRequest();
             xhr.open('POST', '/adminpanel/tickets/' + ticketId + '/update', true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.setRequestHeader(csrfHeader, csrfToken);
@@ -86,15 +85,14 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 document.getElementById("ticketEraser").addEventListener("click", function() {
-    var ticketId = this.dataset.ticketId;
-    var requestURI = this.dataset.uri;
-    var csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
-    var csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+    const requestURI = this.dataset.uri;
+    const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+    const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
     confirmationPop("Are you sure you want to delete this ticket?", function(confirmedByUser)
     {
         if (confirmedByUser)
         {
-            var xhr = new XMLHttpRequest();
+            const xhr = new XMLHttpRequest();
             xhr.open('DELETE', requestURI + '/delete', true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.setRequestHeader(csrfHeader, csrfToken);

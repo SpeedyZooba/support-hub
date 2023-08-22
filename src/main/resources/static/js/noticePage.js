@@ -29,9 +29,9 @@ function alertPop(message, callback)
 }
 
 document.getElementById("noticeEraser").addEventListener("click", function() {
-    var noticeId = this.dataset.noticeId;
-    var csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
-    var csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+    const noticeId = this.dataset.noticeId;
+    const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+    const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
     confirmationPop("Are you sure you want to remove this notice?", function(confirmedByUser)
     {
         if (confirmedByUser)

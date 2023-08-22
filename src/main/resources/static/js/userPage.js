@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var button = document.getElementById("userEraser");
-    var userId = button.dataset.userId;
-    var ownerId = button.dataset.ownerId;
+    const button = document.getElementById("userEraser");
+    const userId = button.dataset.userId;
+    const ownerId = button.dataset.ownerId;
     if (userId === ownerId)
     {
         button.setAttribute('disabled', true);
@@ -43,14 +43,14 @@ function alertPop(message, callback)
 
 document.getElementById("userEraser").addEventListener("click", function() 
 {
-    var userId = this.dataset.userId;
-    var csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
-    var csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+    const userId = this.dataset.userId;
+    const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+    const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
     confirmationPop("Are you sure you want to remove this user?", function(confirmedByUser)
     {
         if (confirmedByUser)
         {
-            var xhr = new XMLHttpRequest();
+            const xhr = new XMLHttpRequest();
             xhr.open('DELETE', '/adminpanel/users/' + userId + '/delete', true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.setRequestHeader(csrfHeader, csrfToken);

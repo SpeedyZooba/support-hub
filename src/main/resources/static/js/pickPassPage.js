@@ -1,5 +1,5 @@
-var isValid = false;
-var areMatching = false;
+let isValid = false;
+let areMatching = false;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[+.$])(?!.*\s).{8,}$/;
 
 function enable()
@@ -16,9 +16,9 @@ function enable()
 
 function checkMatch()
 {
-    var password = document.getElementById("password").value;
-    var retypedPassword = document.getElementById("confirmPassword").value;
-    var failMessage = document.getElementById("wrongPassword");
+    const password = document.getElementById("password").value;
+    const retypedPassword = document.getElementById("confirmPassword").value;
+    const failMessage = document.getElementById("wrongPassword");
     areMatching = (password === retypedPassword);
 
     if (!areMatching)
@@ -33,7 +33,7 @@ function checkMatch()
 
 function deactivateButton()
 {
-    var button = document.getElementById("savePassword");
+    const button = document.getElementById("savePassword");
     button.setAttribute("disabled", true);
     button.classList.add("unclickable");
     document.getElementById("cursorWrap").style.cursor = "not-allowed";
@@ -41,7 +41,7 @@ function deactivateButton()
 
 function activateButton()
 {
-    var button = document.getElementById("savePassword");
+    const button = document.getElementById("savePassword");
     button.removeAttribute("disabled");
     button.classList.remove("unclickable");
     document.getElementById("cursorWrap").style.cursor = "";
@@ -49,8 +49,8 @@ function activateButton()
 
 document.getElementById("password").addEventListener("input", function()
 {
-    var password = document.getElementById("password").value;
-    var failMessage = document.getElementById("failedPassword");
+    const password = document.getElementById("password").value;
+    const failMessage = document.getElementById("failedPassword");
     isValid = passwordRegex.test(password);
 
     if (!isValid)
