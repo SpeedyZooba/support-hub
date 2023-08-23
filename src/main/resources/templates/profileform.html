@@ -45,7 +45,10 @@
                                 <span class="input-group-text"><i class="bi-calendar-fill"></i></span>
                                 <input type="date" class="form-control" th:field="*{dateOfBirth}" name="dateOfBirth" th:value="${userToEdit.dateOfBirth}" autocomplete="off" required>
                             </div>
-                            <button type="submit" class="btn button">Save</button>
+                            <div>
+                                <a th:href="@{/profile}" class="btn button">Go Back</a>
+                                <button type="submit" class="btn button float-end">Save</button>
+                            </div>
                         </form>
                     </div>
                 </div>

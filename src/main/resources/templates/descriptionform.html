@@ -35,7 +35,10 @@
                                 <textarea id="inputArea" class="form-control dynamic-field" th:field="*{description}" rows="1" name="description" th:value="${notice.description}"
                                 placeholder="Please specify the details" autocomplete="off" required></textarea>
                             </div>
-                            <button type="submit" class=" btn button">Save</button>
+                            <div>
+                                <a th:href="@{/adminpanel/notices/{id}(id=${notice.noticeId})}" class="btn button">Go Back</a>
+                                <button type="submit" class="btn button float-end">Save</button>
+                            </div>
                         </form>
                     </div>
                 </div>

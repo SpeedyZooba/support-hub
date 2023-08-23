@@ -72,7 +72,10 @@
                                     <label class="form-check-label" for="perm">Grant administrator permissions</label>
                                 </div>
                             </div>
-                            <button type="submit" class=" btn button">Save</button>
+                            <div>
+                                <a th:href="@{/adminpanel/users/{id}(id=${user.userId})}" class="btn button">Go Back</a>
+                                <button type="submit" class="btn button float-end">Save</button>
+                            </div>
                         </form>
                     </div>
                 </div>
