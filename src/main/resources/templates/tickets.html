@@ -45,6 +45,13 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <tr th:if="${empty}">
+                                <td colspan="5">
+                                    <div class="text-muted text-center mt-3">
+                                        <p th:text="${empty}"></p>
+                                    </div>
+                                </td>
+                            </tr>
                         </div>
                     </div>
                     <nav>

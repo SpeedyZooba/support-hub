@@ -70,7 +70,7 @@ public class TicketController
         if (ticketsFound.isEmpty())
         {
             log.warn("Inside the isEmpty() check conditional block.");
-            model.addAttribute("empty", "No tickets issued by this user found.");
+            model.addAttribute("empty", "No tickets found.");
         }
         log.info("displayTicketsByUser is about to finish execution.");
         // create pagination for display
