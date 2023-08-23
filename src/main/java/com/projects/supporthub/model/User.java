@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -57,7 +56,7 @@ public class User implements Serializable
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime lastPassChange;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles;
 

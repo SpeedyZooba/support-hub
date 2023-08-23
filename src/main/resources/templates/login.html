@@ -11,14 +11,14 @@
 <body>
     <div class="container">
         <div class="text-center mt-4">
-            <img src="../static/images/login_logo.png" th:src="@{/images/login_logo.png}" alt="logo">
+            <img src="../static/images/login_logo.png" th:src="@{/images/login_logo.png}" style="width: 8%;"alt="logo">
         </div>
-        <div class="text-center mt-4">
+        <div class="text-center mt-2">
             <h1 style="font-family: fangsong;">Welcome!</h2>
             <span>Please enter your details to login.</span>
         </div>
         <div class="row justify-content-center mt-4">
-            <div class="col-md-6">
+            <div class="col-md-6 form-sm">
                 <div th:if="${param.error}" class="alert alert-danger">Invalid username or password.</div>
                 <div th:if="${param.logout}" class="alert alert-success">You have been logged out.</div>
                 <div th:if="${param.expired}" class="alert alert-info">Your session has expired.</div>

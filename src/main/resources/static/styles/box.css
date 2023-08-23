@@ -1,8 +1,16 @@
 .field-box {
     border-color: #33b8bc;
     border-width: 1px;
-    border-radius: 0;
+    border-radius: 4px;
     background-color: #f7f7f7;
+}
+
+.form-md {
+    width: 40%;
+}
+
+.form-sm {
+    width: 30%;
 }
 
 .dynamic-field {

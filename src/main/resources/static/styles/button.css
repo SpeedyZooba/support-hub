@@ -20,6 +20,7 @@
 .btn:first-child:active
 {
     color: white;
+    background-color: #b62d62d9
 }
 
 .btn-close
