@@ -19,6 +19,7 @@ public class LoginController
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof UserDetails)
         {
+            log.info("Denied access to login as the context is not anonymous.");
             return "redirect:/home";
         }
         log.info("Login page initiated.");

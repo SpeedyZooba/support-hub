@@ -197,7 +197,9 @@ public class AdminController
         log.info("displayTicketById has begun execution.");
         ModelAndView mav = new ModelAndView("ticketinfo");
         Ticket ticketFound = tickets.getTicketById(ticketId);
+        User createdBy = users.getUserById(ticketFound.getCreatedBy());
         mav.addObject("ticket", ticketFound);
+        mav.addObject("createdBy", createdBy.getFirstName() + " " + createdBy.getLastName());
         log.info("displayTicketById is about to finish execution.");
         return mav;
     }
